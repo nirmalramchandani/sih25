@@ -189,18 +189,42 @@ export default function DoctorDashboard() {
               <DialogTrigger asChild>
                 <Button disabled={!isApproved}>Chat</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader><DialogTitle>Doctor–Patient Chat</DialogTitle></DialogHeader>
-                <div className="max-h-64 overflow-y-auto space-y-2 text-sm">
-                  {messages.map((m,i)=> (
-                    <div key={i} className={m.role==="doctor"?"text-right":"text-left"}>
-                      <span className={m.role==="doctor"?"inline-block rounded-md bg-primary px-2 py-1 text-primary-foreground":"inline-block rounded-md bg-muted px-2 py-1"}>{m.text}</span>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Chat with {patient.name}</DialogTitle>
+                </DialogHeader>
+                <div className="h-96 rounded-md border bg-background">
+                  <div className="flex h-full flex-col">
+                    <div className="border-b px-4 py-2 text-xs text-muted-foreground">Secure consultation chat (mock)</div>
+                    <div id="chat-scroll" className="flex-1 space-y-3 overflow-y-auto p-3 text-sm">
+                      {messages.length === 0 && (
+                        <div className="text-center text-xs text-muted-foreground">No messages yet. Say hello 👋</div>
+                      )}
+                      {messages.map((m, i) => (
+                        <div key={i} className={m.role === "doctor" ? "flex justify-end" : "flex justify-start"}>
+                          <div className="max-w-[75%]">
+                            <div className={m.role === "doctor" ? "text-right text-[10px] text-muted-foreground" : "text-[10px] text-muted-foreground"}>
+                              {new Date(m.ts).toLocaleTimeString()}
+                            </div>
+                            <div className={m.role === "doctor" ? "rounded-2xl bg-primary px-3 py-2 text-primary-foreground shadow-sm" : "rounded-2xl bg-muted px-3 py-2 shadow-sm"}>
+                              {m.text}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="mt-2 flex gap-2">
-                  <Input placeholder="Type a message" value={draft} onChange={(e)=>setDraft(e.target.value)} />
-                  <Button onClick={send}>Send</Button>
+                    <div className="border-t p-2">
+                      <div className="mb-2 flex flex-wrap gap-2 text-xs">
+                        <button className="rounded-full border px-2 py-1" onClick={()=>setDraft("Please follow the plan and hydrate 250ml now.")}>Hydration</button>
+                        <button className="rounded-full border px-2 py-1" onClick={()=>setDraft("How are you feeling after lunch?")}>Check-in</button>
+                        <button className="rounded-full border px-2 py-1" onClick={()=>setDraft("Schedule a follow-up for tomorrow 5pm.")}>Schedule</button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input placeholder="Type a message" value={draft} onChange={(e)=>setDraft(e.target.value)} onKeyDown={(e)=>{ if(e.key==='Enter'){ e.preventDefault(); send(); } }} />
+                        <Button onClick={send}>Send</Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>
