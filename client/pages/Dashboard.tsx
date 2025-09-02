@@ -127,6 +127,7 @@ export default function Dashboard() {
                       <Button className="mt-3 w-full" onClick={() => {
                         setRequests((r) => r.concat({ id: `req_${Date.now()}`, userId: "me", doctorId: d.id, status: "pending", createdAt: new Date().toISOString() }));
                         setConnectOpen(false);
+                        toast({ title: "Consultation requested", description: `We’ll connect you with ${d.name} shortly. You’ll see updates in My Patients and receive notifications here.` });
                       }}>Request Consult</Button>
                     </Card>
                   ))}
