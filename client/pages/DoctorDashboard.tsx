@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 
 export default function DoctorDashboard() {
-  const { requests, setRequests } = useAppState();
+  const { currentUser, doctors, requests, setRequests } = useAppState();
   const [videoOpen, setVideoOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<{role:"doctor"|"patient"; text:string; ts:number}[]>([]);
@@ -19,11 +19,23 @@ export default function DoctorDashboard() {
   ]);
   const [selected, setSelected] = useState<string | null>(null);
 
+  const getDoctorProfileId = () => {
+    const key = `app:doctor-map:${currentUser?.id || "anon"}`;
+    let mapped = localStorage.getItem(key);
+    if (!mapped) {
+      mapped = doctors[0]?.id || "d1";
+      localStorage.setItem(key, mapped);
+    }
+    return mapped;
+  };
+  const doctorProfileId = getDoctorProfileId();
+
   const accept = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "accepted" } : r));
   const reject = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "rejected" } : r));
 
   const selectedReq = useMemo(()=> requests.find(r=>r.id===selected) || null, [requests, selected]);
-  const myPatients = useMemo(()=> requests.filter(r=>r.status === "accepted"), [requests]);
+  const pendingForMe = useMemo(()=> requests.filter(r=>r.doctorId === doctorProfileId && r.status === "pending"), [requests, doctorProfileId]);
+  const myPatients = useMemo(()=> requests.filter(r=>r.doctorId === doctorProfileId && r.status === "accepted"), [requests, doctorProfileId]);
 
   if (!selectedReq) {
     return (
