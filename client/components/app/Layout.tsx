@@ -15,13 +15,18 @@ export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const menu = [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/diet-plan", label: "Diet Plan", icon: Salad },
-    { to: "/tracking", label: "Tracking", icon: BarChart3 },
-    { to: "/recipes", label: "Recipes", icon: ChefHat },
-    { to: "/scan", label: "Scan", icon: ScanLine },
-  ];
+  const isDoctor = currentUser?.role === "doctor";
+  const menu = isDoctor
+    ? [
+        { to: "/doctor", label: "Doctor Panel", icon: Stethoscope },
+      ]
+    : [
+        { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+        { to: "/diet-plan", label: "Diet Plan", icon: Salad },
+        { to: "/tracking", label: "Tracking", icon: BarChart3 },
+        { to: "/recipes", label: "Recipes", icon: ChefHat },
+        { to: "/scan", label: "Scan", icon: ScanLine },
+      ];
 
   return (
     <SidebarProvider>
@@ -50,16 +55,6 @@ export const AppLayout: React.FC = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {currentUser?.role === "doctor" && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={location.pathname === "/doctor"}>
-                    <NavLink to="/doctor" className="flex items-center gap-2">
-                      <Stethoscope className="h-4 w-4" />
-                      <span>Doctor Panel</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
