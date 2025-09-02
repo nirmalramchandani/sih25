@@ -150,6 +150,30 @@ export default function Dashboard() {
         </Card>
       </div>
 
+      <Card>
+        <CardHeader className="flex items-center justify-between">
+          <CardTitle>Notifications</CardTitle>
+          <Button variant="outline" size="sm" onClick={markAllRead}>Mark all read</Button>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {notifications.length === 0 && (
+              <div className="text-sm text-muted-foreground">No notifications yet.</div>
+            )}
+            {notifications.slice(0,8).map((n)=> (
+              <div key={n.id} className="flex items-start gap-3 rounded-md border p-2">
+                <span className={`mt-1 inline-block h-2 w-2 rounded-full ${n.read ? 'bg-muted' : 'bg-primary'}`} />
+                <div className="flex-1">
+                  <div className="text-sm font-medium">{n.title}</div>
+                  <div className="text-xs text-muted-foreground">{n.message}</div>
+                </div>
+                <div className="text-[10px] text-muted-foreground">{new Date(n.time).toLocaleTimeString()}</div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {dietPlan && (
         <Card>
           <CardHeader>
