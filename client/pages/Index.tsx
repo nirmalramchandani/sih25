@@ -57,13 +57,53 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
   const [qualification, setQualification] = useState("BAMS");
   const [consent, setConsent] = useState(false);
 
-  const [quiz, setQuiz] = useState({ warm: 2, spicy: 2, cold: 2, sweet: 2 });
-  const dosha = useMemo(() => {
-    const { warm, spicy, cold, sweet } = quiz;
-    if (spicy > warm && spicy > cold) return "Pitta" as const;
-    if (cold > warm && cold > spicy) return "Vata" as const;
-    return "Kapha" as const;
-  }, [quiz]);
+  type Dosha = "Vata" | "Pitta" | "Kapha";
+  const [quizStep, setQuizStep] = useState(0);
+  const [answers, setAnswers] = useState<number[]>(Array(7).fill(-1));
+  const quiz = [
+    { q: "Body build & weight tendency", options: [
+      { label: "Slender; finds it hard to gain weight", w: { Vata: 2, Pitta: 1, Kapha: 0 } },
+      { label: "Medium; gains/loses easily", w: { Vata: 0, Pitta: 2, Kapha: 1 } },
+      { label: "Broad; gains weight easily", w: { Vata: 0, Pitta: 1, Kapha: 2 } },
+    ]},
+    { q: "Temperature preference / tolerance", options: [
+      { label: "Prefers warmth; dislikes cold", w: { Vata: 2, Pitta: 0, Kapha: 1 } },
+      { label: "Dislikes heat; enjoys cool", w: { Vata: 0, Pitta: 2, Kapha: 1 } },
+      { label: "Tolerant; prefers moderate", w: { Vata: 1, Pitta: 0, Kapha: 2 } },
+    ]},
+    { q: "Skin & hair", options: [
+      { label: "Dry skin/hair", w: { Vata: 2, Pitta: 0, Kapha: 0 } },
+      { label: "Sensitive/rosy skin, early greying", w: { Vata: 0, Pitta: 2, Kapha: 0 } },
+      { label: "Oily, thick hair", w: { Vata: 0, Pitta: 0, Kapha: 2 } },
+    ]},
+    { q: "Digestion & appetite", options: [
+      { label: "Irregular appetite; gas/bloating", w: { Vata: 2, Pitta: 0, Kapha: 0 } },
+      { label: "Strong appetite; gets irritable if meals delayed", w: { Vata: 0, Pitta: 2, Kapha: 0 } },
+      { label: "Slow appetite; heaviness after meals", w: { Vata: 0, Pitta: 0, Kapha: 2 } },
+    ]},
+    { q: "Energy & sleep", options: [
+      { label: "Variable energy; light sleeper", w: { Vata: 2, Pitta: 0, Kapha: 0 } },
+      { label: "High drive; moderate sleep", w: { Vata: 0, Pitta: 2, Kapha: 0 } },
+      { label: "Steady energy; deep long sleep", w: { Vata: 0, Pitta: 0, Kapha: 2 } },
+    ]},
+    { q: "Mind & emotions", options: [
+      { label: "Worry/anxiety; quick ideas", w: { Vata: 2, Pitta: 0, Kapha: 0 } },
+      { label: "Perfectionist; impatient", w: { Vata: 0, Pitta: 2, Kapha: 0 } },
+      { label: "Calm; slow to change", w: { Vata: 0, Pitta: 0, Kapha: 2 } },
+    ]},
+    { q: "Bowel movements", options: [
+      { label: "Dry/constipated", w: { Vata: 2, Pitta: 0, Kapha: 0 } },
+      { label: "Loose/acidic", w: { Vata: 0, Pitta: 2, Kapha: 0 } },
+      { label: "Sluggish", w: { Vata: 0, Pitta: 0, Kapha: 2 } },
+    ]},
+  ];
+
+  const dosha = useMemo<Dosha>(() => {
+    const totals = { Vata: 0, Pitta: 0, Kapha: 0 } as Record<Dosha, number>;
+    answers.forEach((a, i) => { if (a >= 0) { const w = quiz[i].options[a].w; totals.Vata += w.Vata; totals.Pitta += w.Pitta; totals.Kapha += w.Kapha; } });
+    const best = Object.entries(totals).sort((a,b)=>b[1]-a[1])[0][0] as Dosha;
+    return best;
+  }, [answers]);
 
   return (
     <Card className="border-emerald-200/40 shadow-lg">
@@ -103,12 +143,30 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
                   <div className="col-span-2 grid gap-1"><Label>Activity</Label><Input value={activity} onChange={(e)=>setActivity(e.target.value)} /></div>
                 </div>
                 <div className="mt-3 rounded-md border bg-muted/20 p-3">
-                  <div className="mb-2 text-sm font-medium">Quick Dosha Quiz</div>
-                  <QuizSlider label="Prefer warm foods" value={quiz.warm} onChange={(v)=>setQuiz({...quiz,warm:v})} />
-                  <QuizSlider label="Enjoy spicy taste" value={quiz.spicy} onChange={(v)=>setQuiz({...quiz,spicy:v})} />
-                  <QuizSlider label="Often feel cold" value={quiz.cold} onChange={(v)=>setQuiz({...quiz,cold:v})} />
-                  <QuizSlider label="Crave sweets" value={quiz.sweet} onChange={(v)=>setQuiz({...quiz,sweet:v})} />
-                  <div className="mt-2 text-xs text-muted-foreground">Suggested Dosha: <span className="font-semibold">{dosha}</span></div>
+                  <div className="mb-2 text-sm font-medium">Dosha Assessment</div>
+                  <div className="mb-2 text-xs text-muted-foreground">Answer the questions to estimate your predominant dosha.</div>
+                  <div className="mb-3 h-1 w-full rounded bg-muted">
+                    <div className="h-1 rounded bg-primary" style={{ width: `${((quizStep)/quiz.length)*100}%` }} />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">{quiz[quizStep].q}</div>
+                    <div className="grid gap-2">
+                      {quiz[quizStep].options.map((o, idx)=> (
+                        <label key={idx} className="flex cursor-pointer items-center gap-2 rounded-md border p-2 hover:bg-muted">
+                          <input type="radio" name={`q-${quizStep}`} checked={answers[quizStep]===idx} onChange={()=> setAnswers(a=>{ const c=[...a]; c[quizStep]=idx; return c; })} />
+                          <span className="text-sm">{o.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="flex justify-between pt-2">
+                      <Button variant="outline" size="sm" onClick={()=> setQuizStep(s=> Math.max(0, s-1))} disabled={quizStep===0}>Back</Button>
+                      {quizStep < quiz.length-1 ? (
+                        <Button size="sm" onClick={()=> setQuizStep(s=> Math.min(quiz.length-1, s+1))} disabled={answers[quizStep]===-1}>Next</Button>
+                      ) : (
+                        <div className="text-xs text-muted-foreground">Result: <span className="font-semibold">{dosha}</span></div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -121,7 +179,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
             )}
 
             <label className="flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" checked={!!consent} onChange={(e)=>setConsent(e.target.checked)} /> I consent to storing my data locally for this demo</label>
-            <Button className="w-full" disabled={!consent} onClick={() => onAuthed({ id: `u_${Date.now()}`, name: name || "Guest", email, role, dosha: role === "user" ? dosha : null })}>Continue</Button>
+            <Button className="w-full" disabled={!consent} onClick={() => onAuthed({ id: `u_${Date.now()}`, name: name || "Guest", email, role, dosha: role === "user" ? dosha : null })}>Continue ({role === "user" ? `Dosha: ${dosha}` : "Doctor"})</Button>
           </TabsContent>
 
           <TabsContent value="login" className="space-y-4">
@@ -133,11 +191,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
               <Label>Password</Label>
               <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" />
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Button variant={role === "user" ? "default" : "outline"} onClick={() => setRole("user")}>User</Button>
-              <Button variant={role === "doctor" ? "default" : "outline"} onClick={() => setRole("doctor")}>Doctor</Button>
-            </div>
-            <Button className="w-full" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: "Member", email, role, dosha: role === "user" ? "Kapha" : null })}>Log in</Button>
+            <Button className="w-full" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: "Member", email, role: "user", dosha: "Kapha" })}>Log in</Button>
           </TabsContent>
         </Tabs>
       </CardContent>
