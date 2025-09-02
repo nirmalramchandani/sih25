@@ -19,10 +19,7 @@ export default function Index() {
           <div className="h-9 w-9 rounded-md bg-gradient-to-br from-emerald-400 to-lime-500" />
           <div className="text-xl font-bold tracking-tight">AyurWell</div>
         </div>
-        <div className="hidden gap-2 sm:flex">
-          <Button variant="ghost" onClick={() => setRole("user")}>User</Button>
-          <Button variant="ghost" onClick={() => setRole("doctor")}>Doctor</Button>
-        </div>
+        <div className="hidden gap-2 sm:flex"></div>
       </header>
 
       <main className="mx-auto grid max-w-6xl items-start gap-8 px-6 pb-16 md:grid-cols-2">
