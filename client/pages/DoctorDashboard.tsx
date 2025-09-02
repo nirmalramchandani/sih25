@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useAppState } from "@/context/app-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,44 +14,79 @@ export default function DoctorDashboard() {
     { time: "12:30", name: "Moong Dal Khichdi", calories: 450 },
     { time: "19:30", name: "Steamed Veg + Ghee", calories: 420 },
   ]);
+  const [selected, setSelected] = useState<string | null>(null);
 
   const accept = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "accepted" } : r));
   const reject = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "rejected" } : r));
 
-  const connected = requests.filter(r=>r.status==="accepted");
-  return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <Card>
-        <CardHeader>
-          <CardTitle>Patient Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {requests.length === 0 && (
-                <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No requests</TableCell></TableRow>
-              )}
-              {requests.map((r) => (
-                <TableRow key={r.id}>
-                  <TableCell>{r.id}</TableCell>
-                  <TableCell className="capitalize">{r.status}</TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button size="sm" variant="outline" onClick={() => accept(r.id)}>Accept</Button>
-                    <Button size="sm" variant="destructive" onClick={() => reject(r.id)}>Reject</Button>
-                  </TableCell>
+  const selectedReq = useMemo(()=> requests.find(r=>r.id===selected) || null, [requests, selected]);
+
+  if (!selectedReq) {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Patient Requests</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {requests.length === 0 && (
+                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No requests</TableCell></TableRow>
+                )}
+                {requests.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="font-mono">{r.id}</TableCell>
+                    <TableCell className="capitalize">{r.status}</TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Button size="sm" variant="outline" onClick={() => accept(r.id)}>Accept</Button>
+                      <Button size="sm" variant="destructive" onClick={() => reject(r.id)}>Reject</Button>
+                      <Button size="sm" onClick={()=> setSelected(r.id)}>Open</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const patient = {
+    id: selectedReq.userId,
+    name: `Patient ${selectedReq.userId.slice(-4)}`,
+    age: 30,
+    dosha: ["Vata","Pitta","Kapha"][Math.floor(Math.random()*3)],
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>Patient Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2 sm:grid-cols-4">
+              <div><div className="text-xs text-muted-foreground">ID</div><div className="font-mono">{patient.id}</div></div>
+              <div><div className="text-xs text-muted-foreground">Name</div><div className="font-medium">{patient.name}</div></div>
+              <div><div className="text-xs text-muted-foreground">Age</div><div>{patient.age}</div></div>
+              <div><div className="text-xs text-muted-foreground">Dosha</div><div className="font-medium">{patient.dosha}</div></div>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="ml-3">
+          <Button variant="outline" onClick={()=> setSelected(null)}>Back to Requests</Button>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>
