@@ -54,10 +54,10 @@ export default function DoctorDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {requests.length === 0 && (
-                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No requests</TableCell></TableRow>
+                {pendingForMe.length === 0 && (
+                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No pending requests</TableCell></TableRow>
                 )}
-                {requests.map((r) => (
+                {pendingForMe.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell className="font-mono">{r.id}</TableCell>
                     <TableCell className="capitalize">{r.status}</TableCell>
