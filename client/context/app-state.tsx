@@ -85,6 +85,7 @@ export type AppState = {
   notifications: Notification[];
   addNotification: (n: Omit<Notification, "id" | "time" | "read">) => void;
   markAllRead: () => void;
+  markNotificationRead: (id: string) => void;
   updateWater: (deltaMl: number) => void;
   markMealTaken: () => void;
   generateMockPlan: (overrides?: Partial<DietPlan>) => DietPlan;
@@ -118,7 +119,8 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const addNotification = (n: Omit<Notification, "id" | "time" | "read">) => {
     setNotifications((prev) => [{ id: uid("ntf"), time: new Date().toISOString(), read: false, ...n }, ...prev].slice(0, 50));
   };
-  const markAllRead = () => setNotifications((prev) => prev.map((x) => ({ ...x, read: true })));
+  const markAllRead = () => setNotifications((prev) => []);
+  const markNotificationRead = (id: string) => setNotifications((prev) => prev.filter((x) => x.id !== id));
 
   const updateWater = (deltaMl: number) => {
     setProgress((p) => ({ ...p, waterMl: Math.max(0, Math.min(p.waterGoalMl, p.waterMl + deltaMl)) }));
@@ -159,6 +161,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     notifications,
     addNotification,
     markAllRead,
+    markNotificationRead,
     updateWater,
     markMealTaken,
     generateMockPlan,
