@@ -22,6 +22,10 @@ export const ChatWidget: React.FC = () => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
+  useEffect(()=>{
+    try { localStorage.setItem("app:chatOpen", open ? "1" : "0"); } catch {}
+  }, [open]);
+
   const handleSend = () => {
     if (!input.trim()) return;
     const text = input.trim();
