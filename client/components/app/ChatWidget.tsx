@@ -7,7 +7,9 @@ import { MessageCircle } from "lucide-react";
 import { useAppState } from "@/context/app-state";
 
 export const ChatWidget: React.FC = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState<boolean>(() => {
+    try { return localStorage.getItem("app:chatOpen") === "1"; } catch { return false; }
+  });
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ role: "user" | "bot"; text: string; ts: number }[]>([
     { role: "bot", text: "Hi! I'm your Ayurvedic assistant. Tell me what you ate or ask for tips.", ts: Date.now() },
