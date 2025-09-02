@@ -15,7 +15,7 @@ import { ChefHat, Salad, Stethoscope, ScanLine, Bot, Droplet } from "lucide-reac
 import { toast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
-  const { currentUser, progress, updateWater, markMealTaken, dietPlan, generateMockPlan, doctors, setRequests, notifications, addNotification, markAllRead } = useAppState();
+  const { currentUser, progress, updateWater, markMealTaken, dietPlan, generateMockPlan, doctors, setRequests, notifications, addNotification, markAllRead, markNotificationRead } = useAppState();
   const [dietOpen, setDietOpen] = useState(false);
   const [connectOpen, setConnectOpen] = useState(false);
   const [scanOpen, setScanOpen] = useState(false);
