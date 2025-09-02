@@ -9,10 +9,11 @@ import { useAppState } from "@/context/app-state";
 export const ChatWidget: React.FC = () => {
   const [open, setOpen] = useState(true);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<{ role: "user" | "bot"; text: string }[]>([
-    { role: "bot", text: "Hi! I'm your Ayurvedic assistant. Tell me what you ate or ask for tips." },
+  const [messages, setMessages] = useState<{ role: "user" | "bot"; text: string; ts: number }[]>([
+    { role: "bot", text: "Hi! I'm your Ayurvedic assistant. Tell me what you ate or ask for tips.", ts: Date.now() },
   ]);
   const { markMealTaken, updateWater } = useAppState();
+  const [uploadName, setUploadName] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export const ChatWidget: React.FC = () => {
   const handleSend = () => {
     if (!input.trim()) return;
     const text = input.trim();
-    setMessages((m) => [...m, { role: "user", text }]);
+    setMessages((m) => [...m, { role: "user", text, ts: Date.now() }]);
     setInput("");
 
     const t = text.toLowerCase();
@@ -40,7 +41,7 @@ export const ChatWidget: React.FC = () => {
     }
 
     setTimeout(() => {
-      setMessages((m) => [...m, { role: "bot", text: reply }]);
+      setMessages((m) => [...m, { role: "bot", text: reply, ts: Date.now() }]);
     }, 400);
   };
 
@@ -55,12 +56,23 @@ export const ChatWidget: React.FC = () => {
           <div className="max-h-64 space-y-2 overflow-y-auto p-3 text-sm">
             {messages.map((m, i) => (
               <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
-                <div className={cn("rounded-md px-3 py-2", m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted")}>{m.text}</div>
+                <div>
+                  <div className={cn("rounded-md px-3 py-2", m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted")}>{m.text}</div>
+                  <div className="mt-0.5 text-[10px] text-muted-foreground">{new Date(m.ts).toLocaleTimeString()}</div>
+                </div>
               </div>
             ))}
             <div ref={endRef} />
           </div>
           <div className="border-t p-2">
+            <div className="mb-2 flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={()=>setInput("I drank water")}>+250ml Water</Button>
+              <Button size="sm" variant="outline" onClick={()=>setInput("I ate my lunch")}>I ate lunch</Button>
+              <label className="inline-flex cursor-pointer items-center gap-2 text-xs">
+                <input type="file" accept="image/*" className="hidden" onChange={(e)=>{ setUploadName(e.target.files?.[0]?.name || null); setMessages((m)=>m.concat({ role:"user", text: `Uploaded barcode ${e.target.files?.[0]?.name || "image"}`, ts: Date.now()})); setTimeout(()=> setMessages((m)=>m.concat({ role:"bot", text:"Scanned: Oats 100g • 389 kcal • Tags: Warm, Madhura, Light", ts: Date.now()})), 500); }} />
+                <span className="rounded-md border px-2 py-1">Upload Barcode</span>
+              </label>
+            </div>
             <Textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type a message... e.g., I drank water" className="mb-2 h-16" />
             <Button className="w-full" onClick={handleSend}>Send</Button>
           </div>

@@ -52,6 +52,13 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [age, setAge] = useState(28);
+  const [gender, setGender] = useState("Female");
+  const [weight, setWeight] = useState(65);
+  const [height, setHeight] = useState(170);
+  const [activity, setActivity] = useState("Moderate");
+  const [qualification, setQualification] = useState("BAMS");
+  const [consent, setConsent] = useState(false);
 
   const [quiz, setQuiz] = useState({ warm: 2, spicy: 2, cold: 2, sweet: 2 });
   const dosha = useMemo(() => {
@@ -90,17 +97,34 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
             </div>
 
             {role === "user" && (
-              <div className="rounded-md border bg-muted/20 p-3">
-                <div className="mb-2 text-sm font-medium">Quick Dosha Quiz</div>
-                <QuizSlider label="Prefer warm foods" value={quiz.warm} onChange={(v)=>setQuiz({...quiz,warm:v})} />
-                <QuizSlider label="Enjoy spicy taste" value={quiz.spicy} onChange={(v)=>setQuiz({...quiz,spicy:v})} />
-                <QuizSlider label="Often feel cold" value={quiz.cold} onChange={(v)=>setQuiz({...quiz,cold:v})} />
-                <QuizSlider label="Crave sweets" value={quiz.sweet} onChange={(v)=>setQuiz({...quiz,sweet:v})} />
-                <div className="mt-2 text-xs text-muted-foreground">Suggested Dosha: <span className="font-semibold">{dosha}</span></div>
+              <>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="grid gap-1"><Label>Age</Label><Input type="number" value={age} onChange={(e)=>setAge(parseInt(e.target.value||"0"))} /></div>
+                  <div className="grid gap-1"><Label>Gender</Label><Input value={gender} onChange={(e)=>setGender(e.target.value)} /></div>
+                  <div className="grid gap-1"><Label>Weight (kg)</Label><Input type="number" value={weight} onChange={(e)=>setWeight(parseInt(e.target.value||"0"))} /></div>
+                  <div className="grid gap-1"><Label>Height (cm)</Label><Input type="number" value={height} onChange={(e)=>setHeight(parseInt(e.target.value||"0"))} /></div>
+                  <div className="col-span-2 grid gap-1"><Label>Activity</Label><Input value={activity} onChange={(e)=>setActivity(e.target.value)} /></div>
+                </div>
+                <div className="mt-3 rounded-md border bg-muted/20 p-3">
+                  <div className="mb-2 text-sm font-medium">Quick Dosha Quiz</div>
+                  <QuizSlider label="Prefer warm foods" value={quiz.warm} onChange={(v)=>setQuiz({...quiz,warm:v})} />
+                  <QuizSlider label="Enjoy spicy taste" value={quiz.spicy} onChange={(v)=>setQuiz({...quiz,spicy:v})} />
+                  <QuizSlider label="Often feel cold" value={quiz.cold} onChange={(v)=>setQuiz({...quiz,cold:v})} />
+                  <QuizSlider label="Crave sweets" value={quiz.sweet} onChange={(v)=>setQuiz({...quiz,sweet:v})} />
+                  <div className="mt-2 text-xs text-muted-foreground">Suggested Dosha: <span className="font-semibold">{dosha}</span></div>
+                </div>
+              </>
+            )}
+
+            {role === "doctor" && (
+              <div className="grid gap-2">
+                <Label>Qualification</Label>
+                <Input value={qualification} onChange={(e)=>setQualification(e.target.value)} placeholder="e.g., BAMS, Nutritionist" />
               </div>
             )}
 
-            <Button className="w-full" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: name || "Guest", email, role, dosha: role === "user" ? dosha : null })}>Continue</Button>
+            <label className="flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" checked={!!consent} onChange={(e)=>setConsent(e.target.checked)} /> I consent to storing my data locally for this demo</label>
+            <Button className="w-full" disabled={!consent} onClick={() => onAuthed({ id: `u_${Date.now()}`, name: name || "Guest", email, role, dosha: role === "user" ? dosha : null })}>Continue</Button>
           </TabsContent>
 
           <TabsContent value="login" className="space-y-4">

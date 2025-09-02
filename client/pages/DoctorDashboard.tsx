@@ -18,6 +18,7 @@ export default function DoctorDashboard() {
   const accept = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "accepted" } : r));
   const reject = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "rejected" } : r));
 
+  const connected = requests.filter(r=>r.status==="accepted");
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Card>
