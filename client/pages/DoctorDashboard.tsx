@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export default function DoctorDashboard() {
   const { currentUser, doctors, requests, setRequests } = useAppState();
@@ -18,6 +19,7 @@ export default function DoctorDashboard() {
     { time: "19:30", name: "Steamed Veg + Ghee", calories: 420 },
   ]);
   const [selected, setSelected] = useState<string | null>(null);
+  const [tab, setTab] = useState<"requests" | "patients">("requests");
 
   const getDoctorProfileId = () => {
     const key = `app:doctor-map:${currentUser?.id || "anon"}`;
@@ -63,66 +65,67 @@ export default function DoctorDashboard() {
             <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">Manage incoming requests and active patients</div>
             <div className="rounded-lg border">
               <div className="flex flex-wrap gap-2 border-b p-2 text-sm">
-                <button className="rounded-md bg-muted px-3 py-1.5 font-medium">Requests</button>
-                <button className="rounded-md px-3 py-1.5 hover:bg-muted" onClick={() => { /* anchor for a11y */ }}>
-                  My Patients
-                </button>
+                <button onClick={()=>setTab("requests")} className={cn("rounded-md px-3 py-1.5", tab === "requests" ? "bg-muted font-medium" : "hover:bg-muted")}>Requests</button>
+                <button onClick={()=>setTab("patients")} className={cn("rounded-md px-3 py-1.5", tab === "patients" ? "bg-muted font-medium" : "hover:bg-muted")}>My Patients</button>
               </div>
-              <div className="grid gap-6 p-3 sm:grid-cols-2">
-                <div>
-                  <div className="mb-2 text-sm font-semibold">Patient Requests</div>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Req ID</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {pendingForMe.length === 0 && (
-                        <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No pending requests</TableCell></TableRow>
-                      )}
-                      {pendingForMe.map((r) => (
-                        <TableRow key={r.id} className="hover:bg-muted/40">
-                          <TableCell className="font-mono text-xs">{r.id}</TableCell>
-                          <TableCell>
-                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900">Pending</span>
-                          </TableCell>
-                          <TableCell className="text-right space-x-1">
-                            <Button size="sm" variant="outline" onClick={() => accept(r.id)}>Approve</Button>
-                            <Button size="sm" variant="destructive" onClick={() => reject(r.id)}>Reject</Button>
-                            <Button size="sm" variant="ghost" onClick={()=> setSelected(r.id)}>Open</Button>
-                          </TableCell>
+              <div className="p-3">
+                {tab === "requests" ? (
+                  <div>
+                    <div className="mb-2 text-sm font-semibold">Patient Requests</div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Req ID</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-                <div>
-                  <div className="mb-2 text-sm font-semibold">My Patients</div>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Req ID</TableHead>
-                        <TableHead>Patient</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {myPatients.length === 0 && (
-                        <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No active consultations</TableCell></TableRow>
-                      )}
-                      {myPatients.map((r)=> (
-                        <TableRow key={r.id} className="hover:bg-muted/40">
-                          <TableCell className="font-mono text-xs">{r.id}</TableCell>
-                          <TableCell>{`Patient ${r.userId}`}</TableCell>
-                          <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={()=> setSelected(r.id)}>Open</Button></TableCell>
+                      </TableHeader>
+                      <TableBody>
+                        {pendingForMe.length === 0 && (
+                          <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No pending requests</TableCell></TableRow>
+                        )}
+                        {pendingForMe.map((r) => (
+                          <TableRow key={r.id} className="hover:bg-muted/40">
+                            <TableCell className="font-mono text-xs">{r.id}</TableCell>
+                            <TableCell>
+                              <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900">Pending</span>
+                            </TableCell>
+                            <TableCell className="text-right space-x-1">
+                              <Button size="sm" variant="outline" onClick={() => accept(r.id)}>Approve</Button>
+                              <Button size="sm" variant="destructive" onClick={() => reject(r.id)}>Reject</Button>
+                              <Button size="sm" variant="ghost" onClick={()=> setSelected(r.id)}>Open</Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="mb-2 text-sm font-semibold">My Patients</div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Req ID</TableHead>
+                          <TableHead>Patient</TableHead>
+                          <TableHead className="text-right">Action</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                      </TableHeader>
+                      <TableBody>
+                        {myPatients.length === 0 && (
+                          <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No active consultations</TableCell></TableRow>
+                        )}
+                        {myPatients.map((r)=> (
+                          <TableRow key={r.id} className="hover:bg-muted/40">
+                            <TableCell className="font-mono text-xs">{r.id}</TableCell>
+                            <TableCell>{`Patient ${r.userId}`}</TableCell>
+                            <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={()=> setSelected(r.id)}>Open</Button></TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
