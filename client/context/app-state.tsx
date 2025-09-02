@@ -107,17 +107,26 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     { id: "d3", name: "Dr. Kavya Iyer", specialty: "Metabolic Care", rating: 4.8 },
   ]);
   const [requests, setRequests] = useState<ConsultRequest[]>(() => load<ConsultRequest[]>("app:requests", []));
+  const [notifications, setNotifications] = useState<Notification[]>(() => load<Notification[]>("app:notifications", []));
 
   useEffect(() => save("app:currentUser", currentUser), [currentUser]);
   useEffect(() => save("app:progress", progress), [progress]);
   useEffect(() => save("app:dietPlan", dietPlan), [dietPlan]);
   useEffect(() => save("app:requests", requests), [requests]);
+  useEffect(() => save("app:notifications", notifications), [notifications]);
+
+  const addNotification = (n: Omit<Notification, "id" | "time" | "read">) => {
+    setNotifications((prev) => [{ id: uid("ntf"), time: new Date().toISOString(), read: false, ...n }, ...prev].slice(0, 50));
+  };
+  const markAllRead = () => setNotifications((prev) => prev.map((x) => ({ ...x, read: true })));
 
   const updateWater = (deltaMl: number) => {
     setProgress((p) => ({ ...p, waterMl: Math.max(0, Math.min(p.waterGoalMl, p.waterMl + deltaMl)) }));
+    addNotification({ type: "water", title: "Hydration logged", message: `+${deltaMl}ml water added.` });
   };
   const markMealTaken = () => {
     setProgress((p) => ({ ...p, mealsTaken: Math.min(p.mealsPlanned, p.mealsTaken + 1) }));
+    addNotification({ type: "diet", title: "Meal recorded", message: "Marked one meal as taken." });
   };
 
   const generateMockPlan = (overrides?: Partial<DietPlan>): DietPlan => {
@@ -133,6 +142,7 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
     const plan = { ...base, ...overrides };
     setDietPlan(plan);
+    addNotification({ type: "diet", title: "Diet plan generated", message: `7-day plan for ${plan.date} created.` });
     return plan;
   };
 
@@ -146,10 +156,13 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     doctors,
     requests,
     setRequests,
+    notifications,
+    addNotification,
+    markAllRead,
     updateWater,
     markMealTaken,
     generateMockPlan,
-  }), [currentUser, progress, dietPlan, doctors, requests]);
+  }), [currentUser, progress, dietPlan, doctors, requests, notifications]);
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 };
