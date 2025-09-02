@@ -45,6 +45,15 @@ export type ConsultRequest = {
   createdAt: string;
 };
 
+export type Notification = {
+  id: string;
+  type: "info" | "success" | "warning" | "doctor" | "diet" | "water";
+  title: string;
+  message: string;
+  time: string;
+  read?: boolean;
+};
+
 function uid(prefix = "id") {
   return `${prefix}_${Math.random().toString(36).slice(2, 9)}`;
 }
