@@ -4,7 +4,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -16,8 +15,6 @@ import Recipes from "./pages/Recipes";
 import Scan from "./pages/Scan";
 import { AppLayout } from "./components/app/Layout";
 import { AppStateProvider, useAppState } from "@/context/app-state";
-
-const queryClient = new QueryClient();
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { currentUser } = useAppState();
