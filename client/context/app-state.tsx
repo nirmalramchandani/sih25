@@ -82,6 +82,9 @@ export type AppState = {
   doctors: Doctor[];
   requests: ConsultRequest[];
   setRequests: (r: ConsultRequest[]) => void;
+  notifications: Notification[];
+  addNotification: (n: Omit<Notification, "id" | "time" | "read">) => void;
+  markAllRead: () => void;
   updateWater: (deltaMl: number) => void;
   markMealTaken: () => void;
   generateMockPlan: (overrides?: Partial<DietPlan>) => DietPlan;
