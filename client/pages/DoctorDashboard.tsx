@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 export default function DoctorDashboard() {
   const { requests, setRequests } = useAppState();
   const [videoOpen, setVideoOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [messages, setMessages] = useState<{role:"doctor"|"patient"; text:string; ts:number}[]>([]);
+  const [draft, setDraft] = useState("");
   const [plan, setPlan] = useState([
     { time: "08:00", name: "Warm Spiced Oats", calories: 320 },
     { time: "12:30", name: "Moong Dal Khichdi", calories: 450 },
@@ -20,10 +23,11 @@ export default function DoctorDashboard() {
   const reject = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "rejected" } : r));
 
   const selectedReq = useMemo(()=> requests.find(r=>r.id===selected) || null, [requests, selected]);
+  const myPatients = useMemo(()=> requests.filter(r=>r.status === "accepted"), [requests]);
 
   if (!selectedReq) {
     return (
-      <div className="space-y-4">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Patient Requests</CardTitle>
@@ -46,10 +50,39 @@ export default function DoctorDashboard() {
                     <TableCell className="font-mono">{r.id}</TableCell>
                     <TableCell className="capitalize">{r.status}</TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Button size="sm" variant="outline" onClick={() => accept(r.id)}>Accept</Button>
+                      <Button size="sm" variant="outline" onClick={() => accept(r.id)}>Approve</Button>
                       <Button size="sm" variant="destructive" onClick={() => reject(r.id)}>Reject</Button>
                       <Button size="sm" onClick={()=> setSelected(r.id)}>Open</Button>
                     </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>My Patients</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Req ID</TableHead>
+                  <TableHead>Patient</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {myPatients.length === 0 && (
+                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground">No active consultations</TableCell></TableRow>
+                )}
+                {myPatients.map((r)=> (
+                  <TableRow key={r.id}>
+                    <TableCell className="font-mono">{r.id}</TableCell>
+                    <TableCell>{`Patient ${r.userId}`}</TableCell>
+                    <TableCell className="text-right"><Button size="sm" onClick={()=> setSelected(r.id)}>Open</Button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -65,6 +98,14 @@ export default function DoctorDashboard() {
     name: `Patient ${selectedReq.userId.slice(-4)}`,
     age: 30,
     dosha: ["Vata","Pitta","Kapha"][Math.floor(Math.random()*3)],
+  };
+
+  const isApproved = selectedReq.status === "accepted";
+
+  const send = () => {
+    if (!draft.trim()) return;
+    setMessages((m)=> m.concat({ role: "doctor", text: draft.trim(), ts: Date.now() }, { role: "patient", text: "Thanks, noted!", ts: Date.now()+200 }));
+    setDraft("");
   };
 
   return (
@@ -83,8 +124,9 @@ export default function DoctorDashboard() {
             </div>
           </CardContent>
         </Card>
-        <div className="ml-3">
-          <Button variant="outline" onClick={()=> setSelected(null)}>Back to Requests</Button>
+        <div className="ml-3 flex gap-2">
+          {!isApproved && <Button onClick={()=> accept(selectedReq.id)}>Approve</Button>}
+          <Button variant="outline" onClick={()=> setSelected(null)}>Back</Button>
         </div>
       </div>
 
@@ -104,13 +146,13 @@ export default function DoctorDashboard() {
             <TableBody>
               {plan.map((row, idx) => (
                 <TableRow key={idx}>
-                  <TableCell><Input value={row.time} onChange={(e)=>{
+                  <TableCell><Input disabled={!isApproved} value={row.time} onChange={(e)=>{
                     const v = e.target.value; setPlan(p=>p.map((r,i)=>i===idx?{...r,time:v}:r));
                   }} /></TableCell>
-                  <TableCell><Input value={row.name} onChange={(e)=>{
+                  <TableCell><Input disabled={!isApproved} value={row.name} onChange={(e)=>{
                     const v = e.target.value; setPlan(p=>p.map((r,i)=>i===idx?{...r,name:v}:r));
                   }} /></TableCell>
-                  <TableCell><Input type="number" value={row.calories} onChange={(e)=>{
+                  <TableCell><Input disabled={!isApproved} type="number" value={row.calories} onChange={(e)=>{
                     const v = parseInt(e.target.value||"0"); setPlan(p=>p.map((r,i)=>i===idx?{...r,calories:v}:r));
                   }} /></TableCell>
                 </TableRow>
@@ -118,10 +160,10 @@ export default function DoctorDashboard() {
             </TableBody>
           </Table>
           <div className="mt-3 flex gap-2">
-            <Button onClick={()=>setPlan(p=>[...p,{time:"16:00",name:"Herbal Tea",calories:60}])}>Add Row</Button>
+            <Button disabled={!isApproved} onClick={()=>setPlan(p=>[...p,{time:"16:00",name:"Herbal Tea",calories:60}])}>Add Row</Button>
             <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline">Video Call</Button>
+                <Button variant="outline" disabled={!isApproved}>Video Call</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
@@ -131,7 +173,27 @@ export default function DoctorDashboard() {
                 <div className="text-center text-sm text-muted-foreground">Simulated video frame</div>
               </DialogContent>
             </Dialog>
+            <Dialog open={chatOpen} onOpenChange={setChatOpen}>
+              <DialogTrigger asChild>
+                <Button disabled={!isApproved}>Chat</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader><DialogTitle>Doctor–Patient Chat</DialogTitle></DialogHeader>
+                <div className="max-h-64 overflow-y-auto space-y-2 text-sm">
+                  {messages.map((m,i)=> (
+                    <div key={i} className={m.role==="doctor"?"text-right":"text-left"}>
+                      <span className={m.role==="doctor"?"inline-block rounded-md bg-primary px-2 py-1 text-primary-foreground":"inline-block rounded-md bg-muted px-2 py-1"}>{m.text}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 flex gap-2">
+                  <Input placeholder="Type a message" value={draft} onChange={(e)=>setDraft(e.target.value)} />
+                  <Button onClick={send}>Send</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
+          {!isApproved && (<div className="mt-2 text-xs text-muted-foreground">Approve the request to enable chat, video, and editing.</div>)}
         </CardContent>
       </Card>
     </div>
