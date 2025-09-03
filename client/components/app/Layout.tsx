@@ -34,7 +34,7 @@ export const AppLayout: React.FC = () => {
       <Sidebar className="border-r">
         <SidebarHeader>
           <div className="flex items-center gap-2 px-2 py-1.5">
-            <div className="h-8 w-8 rounded-md bg-[#00FF40]" />
+            <div className="h-8 w-8 rounded-md bg-[#0FA36B]" />
             <div>
               <div className="text-sm font-semibold tracking-tight">AyurWell</div>
               <div className="text-xs text-muted-foreground">Holistic Nutrition</div>
