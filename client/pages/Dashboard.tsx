@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { currentUser, progress, updateWater, markMealTaken, dietPlan, generateMockPlan, doctors, setRequests, notifications, addNotification, markAllRead, markNotificationRead } = useAppState();
   const [dietOpen, setDietOpen] = useState(false);
   const [connectOpen, setConnectOpen] = useState(false);
