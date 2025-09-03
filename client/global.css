@@ -12,8 +12,8 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 60 20% 99%;
-    --foreground: 160 10% 15%;
+    --background: 0 0% 100%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
     --card-foreground: 160 10% 15%;
@@ -24,11 +24,11 @@
     --primary: 157 83% 35%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 90 30% 96%;
-    --secondary-foreground: 160 10% 20%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 15% 20%;
 
-    --muted: 90 20% 95%;
-    --muted-foreground: 160 8% 40%;
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 40%;
 
     --accent: 35 100% 50%;
     --accent-foreground: 0 0% 100%;
@@ -36,19 +36,19 @@
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 90 15% 90%;
-    --input: 90 15% 90%;
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
     --ring: 157 83% 35%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 35 100% 98%;
-    --sidebar-foreground: 160 10% 20%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 15% 20%;
     --sidebar-primary: 157 83% 35%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 100% 92%;
-    --sidebar-accent-foreground: 30 40% 20%;
-    --sidebar-border: 35 50% 90%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 220 20% 20%;
+    --sidebar-border: 220 12% 90%;
     --sidebar-ring: 157 83% 35%;
   }
 
