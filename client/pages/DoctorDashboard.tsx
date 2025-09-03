@@ -13,9 +13,9 @@ export default function DoctorDashboard() {
   const [chatOpen, setChatOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const defaultPlan = [
-    { time: "08:00", name: "Warm Spiced Oats", calories: 320 },
-    { time: "12:30", name: "Moong Dal Khichdi", calories: 450 },
-    { time: "19:30", name: "Steamed Veg + Ghee", calories: 420 },
+    { time: "08:00", name: "Warm Spiced Oats", calories: 320, waterMl: 250 },
+    { time: "12:30", name: "Moong Dal Khichdi", calories: 450, waterMl: 300 },
+    { time: "19:30", name: "Steamed Veg + Ghee", calories: 420, waterMl: 250 },
   ];
   const [plan, setPlan] = useState(defaultPlan);
   const [selected, setSelected] = useState<string | null>(null);
@@ -186,6 +186,8 @@ export default function DoctorDashboard() {
                 <TableHead>Time</TableHead>
                 <TableHead>Meal</TableHead>
                 <TableHead>Calories</TableHead>
+                <TableHead>Water (ml)</TableHead>
+                <TableHead className="w-24 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -200,13 +202,19 @@ export default function DoctorDashboard() {
                   <TableCell><Input disabled={!isApproved} type="number" value={row.calories} onChange={(e)=>{
                     const v = parseInt(e.target.value||"0"); setPlan(p=>p.map((r,i)=>i===idx?{...r,calories:v}:r));
                   }} /></TableCell>
+                  <TableCell><Input disabled={!isApproved} type="number" value={row.waterMl ?? 0} onChange={(e)=>{
+                    const v = parseInt(e.target.value||"0"); setPlan(p=>p.map((r,i)=>i===idx?{...r,waterMl:v}:r));
+                  }} /></TableCell>
+                  <TableCell className="text-right">
+                    <Button size="sm" variant="ghost" disabled={!isApproved} onClick={()=> setPlan(p=> p.filter((_,i)=> i!==idx))}>Delete</Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
           <div className="mt-3 flex gap-2">
-            <Button disabled={!isApproved} onClick={()=>setPlan(p=>[...p,{time:"16:00",name:"Herbal Tea",calories:60}])}>Add Row</Button>
-            <Button disabled={!isApproved} onClick={()=> { setRequests(requests.map(r => r.id === selectedReq.id ? { ...r, plan } : r)); const kcal = plan.reduce((s,p)=> s + (p.calories || 0), 0); addMessage(selectedReq.id, { from: "system", text: `Diet plan updated • ${plan.length} items • ${kcal} kcal total.` }); }}>Save Plan</Button>
+            <Button disabled={!isApproved} onClick={()=>setPlan(p=>[...p,{time:"16:00",name:"Herbal Tea",calories:60, waterMl: 200}])}>Add Row</Button>
+            <Button disabled={!isApproved} onClick={()=> { setRequests(requests.map(r => r.id === selectedReq.id ? { ...r, plan } : r)); const kcal = plan.reduce((s,p)=> s + (p.calories || 0), 0); const water = plan.reduce((s,p)=> s + (p.waterMl || 0), 0); addMessage(selectedReq.id, { from: "system", text: `Diet plan updated • ${plan.length} items • ${kcal} kcal • ${water} ml water.` }); }}>Save Plan</Button>
             <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" disabled={!isApproved}>Video Call</Button>
