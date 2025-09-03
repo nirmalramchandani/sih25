@@ -35,7 +35,11 @@ export default function DoctorMessages() {
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <Button variant="outline" onClick={()=> navigate(-1)}>Back</Button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
       <Card className="md:col-span-1">
         <CardHeader>
           <CardTitle>Patients</CardTitle>
@@ -79,7 +83,7 @@ export default function DoctorMessages() {
                 <Button onClick={send}>Send</Button>
               </div>
               {activePatient?.plan && (
-                <div className="mt-3 text-xs text-muted-foreground">Current plan: {activePatient.plan.length} items • {activePatient.plan.reduce((s,p)=>s+(p.calories||0),0)} kcal</div>
+                <div className="mt-3 text-xs text-muted-foreground">Current plan: {activePatient.plan.length} items • {activePatient.plan.reduce((s,p)=>s+(p.calories||0),0)} kcal • {activePatient.plan.reduce((s,p)=>s+(p.waterMl||0),0)} ml water</div>
               )}
             </div>
           ) : (
@@ -87,6 +91,7 @@ export default function DoctorMessages() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
