@@ -38,6 +38,7 @@ const AppRoutes = () => (
       <Route path="/recipes" element={<Recipes />} />
       <Route path="/scan" element={<Scan />} />
       <Route path="/doctor" element={<DoctorDashboard />} />
+      <Route path="/doctor/messages" element={<React.Suspense fallback={null}><DoctorMessagesLazy /></React.Suspense>} />
     </Route>
     <Route path="*" element={<NotFound />} />
   </Routes>

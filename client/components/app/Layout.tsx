@@ -19,6 +19,7 @@ export const AppLayout: React.FC = () => {
   const menu = isDoctor
     ? [
         { to: "/doctor", label: "Doctor Panel", icon: Stethoscope },
+        { to: "/doctor/messages", label: "Messages", icon: MessageCircle },
       ]
     : [
         { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },

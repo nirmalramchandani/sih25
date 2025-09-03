@@ -57,6 +57,14 @@ export type Notification = {
   read?: boolean;
 };
 
+export type ChatMessage = {
+  id: string;
+  requestId: string;
+  from: "doctor" | "patient" | "system";
+  text: string;
+  ts: number;
+};
+
 function uid(prefix = "id") {
   return `${prefix}_${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -92,9 +100,19 @@ export type AppState = {
   updateWater: (deltaMl: number) => void;
   markMealTaken: () => void;
   generateMockPlan: (overrides?: Partial<DietPlan>) => DietPlan;
+  conversations: Record<string, ChatMessage[]>;
+  addMessage: (requestId: string, msg: Omit<ChatMessage, "id" | "requestId" | "ts"> & { ts?: number }) => void;
 };
 
 const AppStateContext = createContext<AppState | null>(null);
+
+function makePlan(meals?: Partial<ConsultRequest["plan"]>): { time: string; name: string; calories: number }[] {
+  return meals && Array.isArray(meals) && meals.length ? (meals as any) : [
+    { time: "08:00", name: "Warm Spiced Oats", calories: 320 },
+    { time: "12:30", name: "Moong Dal Khichdi", calories: 450 },
+    { time: "19:30", name: "Steamed Veg + Ghee", calories: 420 },
+  ];
+}
 
 export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(() => load<User | null>("app:currentUser", null));
@@ -110,14 +128,40 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     { id: "d2", name: "Dr. Rohan Mehta", specialty: "Digestive Health", rating: 4.7 },
     { id: "d3", name: "Dr. Kavya Iyer", specialty: "Metabolic Care", rating: 4.8 },
   ]);
-  const [requests, setRequests] = useState<ConsultRequest[]>(() => load<ConsultRequest[]>("app:requests", []));
+  const [requests, setRequests] = useState<ConsultRequest[]>(() => {
+    const loaded = load<ConsultRequest[]>("app:requests", []);
+    if (loaded && loaded.length) return loaded;
+    const seed: ConsultRequest[] = [
+      { id: "req_1001", userId: "u1001", doctorId: "d1", status: "accepted", createdAt: new Date(Date.now()-86400000).toISOString(), patientName: "Riya Sharma", patientDosha: "Pitta", plan: makePlan([{ time: "08:00", name: "Lemon Ginger Tea", calories: 40 }, { time: "13:00", name: "Veg Khichdi", calories: 420 }, { time: "19:30", name: "Steamed Veg + Ghee", calories: 400 }]) },
+      { id: "req_1002", userId: "u1002", doctorId: "d1", status: "pending", createdAt: new Date().toISOString(), patientName: "Aarav Patel", patientDosha: "Vata" },
+      { id: "req_1003", userId: "u1003", doctorId: "d1", status: "accepted", createdAt: new Date(Date.now()-3600000).toISOString(), patientName: "Neha Gupta", patientDosha: "Kapha", plan: makePlan([{ time: "08:30", name: "Warm Oats", calories: 320 }, { time: "12:45", name: "Moong Dal Soup", calories: 380 }, { time: "19:00", name: "Millet Roti + Veg", calories: 450 }]) },
+    ];
+    return seed;
+  });
   const [notifications, setNotifications] = useState<Notification[]>(() => load<Notification[]>("app:notifications", []));
+  const [conversations, setConversations] = useState<Record<string, ChatMessage[]>>(() => {
+    const loaded = load<Record<string, ChatMessage[]>>("app:conversations", {});
+    if (Object.keys(loaded).length) return loaded;
+    const base: Record<string, ChatMessage[]> = {};
+    const now = Date.now();
+    base["req_1001"] = [
+      { id: uid("msg"), requestId: "req_1001", from: "system", text: "Consultation started with Riya Sharma.", ts: now - 800000 },
+      { id: uid("msg"), requestId: "req_1001", from: "patient", text: "Good morning, doctor!", ts: now - 790000 },
+      { id: uid("msg"), requestId: "req_1001", from: "doctor", text: "Hello Riya, how are you feeling today?", ts: now - 780000 },
+    ];
+    base["req_1003"] = [
+      { id: uid("msg"), requestId: "req_1003", from: "system", text: "Consultation started with Neha Gupta.", ts: now - 400000 },
+      { id: uid("msg"), requestId: "req_1003", from: "patient", text: "I feel heavy after dinner.", ts: now - 300000 },
+    ];
+    return base;
+  });
 
   useEffect(() => save("app:currentUser", currentUser), [currentUser]);
   useEffect(() => save("app:progress", progress), [progress]);
   useEffect(() => save("app:dietPlan", dietPlan), [dietPlan]);
   useEffect(() => save("app:requests", requests), [requests]);
   useEffect(() => save("app:notifications", notifications), [notifications]);
+  useEffect(() => save("app:conversations", conversations), [conversations]);
 
   const addNotification = (n: Omit<Notification, "id" | "time" | "read">) => {
     setNotifications((prev) => [{ id: uid("ntf"), time: new Date().toISOString(), read: false, ...n }, ...prev].slice(0, 50));
@@ -151,6 +195,16 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return plan;
   };
 
+  const addMessage: AppState["addMessage"] = (requestId, msg) => {
+    setConversations((prev) => {
+      const next = { ...prev };
+      const list = next[requestId] ? [...next[requestId]] : [];
+      list.push({ id: uid("msg"), requestId, from: msg.from, text: msg.text, ts: msg.ts ?? Date.now() });
+      next[requestId] = list.slice(-200);
+      return next;
+    });
+  };
+
   const value = useMemo<AppState>(() => ({
     currentUser,
     setCurrentUser,
@@ -168,7 +222,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     updateWater,
     markMealTaken,
     generateMockPlan,
-  }), [currentUser, progress, dietPlan, doctors, requests, notifications]);
+    conversations,
+    addMessage,
+  }), [currentUser, progress, dietPlan, doctors, requests, notifications, conversations]);
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 };
