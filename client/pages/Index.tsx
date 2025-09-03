@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppState, User } from "@/context/app-state";
+import Hero from "@/components/app/Hero";
+import FeatureCards from "@/components/app/FeatureCards";
+import StreakTracker from "@/components/app/StreakTracker";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -22,30 +25,28 @@ export default function Index() {
         <div className="hidden gap-2 sm:flex"></div>
       </header>
 
-      <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-20 md:grid-cols-2">
-        <div className="pt-8">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Ayurvedic Diet Management
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Personalized sattvic nutrition, mock consults, and habit tracking —
-            all in a clean, responsive prototype.
-          </p>
-          <ul className="mt-6 grid gap-2 text-sm text-muted-foreground">
-            <li>• Take a short quiz to find your Dosha</li>
-            <li>• Generate diet plans and track progress</li>
-            <li>• Connect with doctors for consults</li>
-            <li>• Scan products, get recipes, and chat with the bot</li>
-          </ul>
+      <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-10 md:grid-cols-2">
+        <div className="pt-4">
+          <Hero onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
         </div>
-        <AuthArea
-          onAuthed={(u) => {
-            setCurrentUser(u);
-            navigate("/dashboard");
-          }}
-          defaultRole={role}
-        />
+        <div id="auth-card" className="pt-4">
+          <AuthArea
+            onAuthed={(u) => {
+              setCurrentUser(u);
+              navigate("/dashboard");
+            }}
+            defaultRole={role}
+          />
+        </div>
       </main>
+      <section className="mx-auto grid max-w-6xl gap-6 px-6 pb-20 md:grid-cols-3">
+        <div className="md:col-span-2">
+          <FeatureCards />
+        </div>
+        <div>
+          <StreakTracker />
+        </div>
+      </section>
     </div>
   );
 }
