@@ -21,25 +21,8 @@ export const NavBar: React.FC<{ onGetStarted?: () => void; onSignIn?: () => void
           <div className="h-8 w-8 rounded-lg bg-slate-900" />
           <div className="text-lg font-bold tracking-tight">AyurWell</div>
         </div>
-        <nav className="hidden items-center gap-6 md:flex">
-          <a href="#features" className={linkClass}>
-            Features
-          </a>
-          <a href="#plans" className={linkClass}>
-            Plans
-          </a>
-          <a href="#app" className={linkClass}>
-            App
-          </a>
-          <a href="#contact" className={linkClass}>
-            Contact
-          </a>
-        </nav>
         <div className="flex items-center gap-2">
-          <button className="px-2 text-sm font-medium text-foreground/80 hover:text-foreground underline-offset-4 hover:underline" onClick={onSignIn}>
-            Sign in
-          </button>
-          <Button className="rounded-full" onClick={onGetStarted}>
+          <Button className="rounded-full h-10 px-4 bg-[rgb(32,50,90)] hover:bg-[rgb(32,50,90)]/90" onClick={onGetStarted}>
             Get Started
           </Button>
         </div>
