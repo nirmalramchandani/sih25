@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "@/context/app-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +26,15 @@ export default function DoctorMessages() {
   const activeId = selected || myPatients[0]?.id || null;
   const msgs = activeId ? (conversations[activeId] || []) : [];
   const activePatient = myPatients.find(r => r.id === activeId) || null;
+
+  useEffect(() => {
+    if (!activeId) return;
+    const has = (conversations[activeId] || []).length > 0;
+    if (!has) {
+      addMessage(activeId, { from: "system", text: "Consultation channel opened." });
+      addMessage(activeId, { from: "patient", text: "Hello doctor, could you review my diet plan?" });
+    }
+  }, [activeId]);
 
   const send = () => {
     if (!activeId || !draft.trim()) return;
