@@ -48,7 +48,7 @@ export default function DoctorDashboard() {
     return (
       <div className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-3">
-          <Card className="bg-[#00FF40]/10 border-[#00FF40]/30">
+          <Card className="bg-[#0FA36B]/10 border-[#0FA36B]/30">
             <CardHeader className="pb-2"><CardTitle className="text-sm">Pending</CardTitle></CardHeader>
             <CardContent className="pt-0 text-2xl font-bold">{pendingForMe.length}</CardContent>
           </Card>
