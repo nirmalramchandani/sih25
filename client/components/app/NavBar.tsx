@@ -18,7 +18,7 @@ export const NavBar: React.FC<{ onGetStarted?: () => void; onSignIn?: () => void
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-400 to-green-600" />
+          <div className="h-8 w-8 rounded-lg bg-slate-900" />
           <div className="text-lg font-bold tracking-tight">AyurWell</div>
         </div>
         <nav className="hidden items-center gap-6 md:flex">
@@ -36,9 +36,9 @@ export const NavBar: React.FC<{ onGetStarted?: () => void; onSignIn?: () => void
           </a>
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" className="rounded-full" onClick={onSignIn}>
+          <button className="px-2 text-sm font-medium text-foreground/80 hover:text-foreground underline-offset-4 hover:underline" onClick={onSignIn}>
             Sign in
-          </Button>
+          </button>
           <Button className="rounded-full" onClick={onGetStarted}>
             Get Started
           </Button>
