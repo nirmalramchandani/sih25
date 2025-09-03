@@ -102,12 +102,7 @@ export default function Dashboard() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
-            <Dialog open={dietOpen} onOpenChange={setDietOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-full">Generate Diet Plan</Button>
-              </DialogTrigger>
-              <DietPlanForm onDone={() => setDietOpen(false)} />
-            </Dialog>
+            <Button className="w-full" onClick={() => navigate('/diet-plan')}>Generate Diet Plan</Button>
             <Dialog open={connectOpen} onOpenChange={setConnectOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" className="w-full flex gap-2"><Stethoscope className="h-4 w-4" /> Connect with Doctor</Button>
@@ -137,18 +132,8 @@ export default function Dashboard() {
                 </div>
               </DialogContent>
             </Dialog>
-            <Dialog open={scanOpen} onOpenChange={setScanOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full flex gap-2"><ScanLine className="h-4 w-4" /> Scan Barcode</Button>
-              </DialogTrigger>
-              <ScanModal onDone={() => setScanOpen(false)} />
-            </Dialog>
-            <Dialog open={recipeOpen} onOpenChange={setRecipeOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full">Recipe Generator</Button>
-              </DialogTrigger>
-              <RecipeModal onDone={() => setRecipeOpen(false)} />
-            </Dialog>
+            <Button variant="outline" className="w-full flex gap-2" onClick={() => navigate('/scan')}><ScanLine className="h-4 w-4" /> Scan Barcode</Button>
+            <Button variant="outline" className="w-full" onClick={() => navigate('/recipes')}>Recipe Generator</Button>
           </CardContent>
         </Card>
       </div>
