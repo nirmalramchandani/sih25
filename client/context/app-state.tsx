@@ -45,7 +45,7 @@ export type ConsultRequest = {
   createdAt: string;
   patientName?: string;
   patientDosha?: User["dosha"];
-  plan?: { time: string; name: string; calories: number }[];
+  plan?: { time: string; name: string; calories: number; waterMl?: number }[];
 };
 
 export type Notification = {
@@ -106,11 +106,11 @@ export type AppState = {
 
 const AppStateContext = createContext<AppState | null>(null);
 
-function makePlan(meals?: Partial<ConsultRequest["plan"]>): { time: string; name: string; calories: number }[] {
+function makePlan(meals?: Partial<ConsultRequest["plan"]>): { time: string; name: string; calories: number; waterMl?: number }[] {
   return meals && Array.isArray(meals) && meals.length ? (meals as any) : [
-    { time: "08:00", name: "Warm Spiced Oats", calories: 320 },
-    { time: "12:30", name: "Moong Dal Khichdi", calories: 450 },
-    { time: "19:30", name: "Steamed Veg + Ghee", calories: 420 },
+    { time: "08:00", name: "Warm Spiced Oats", calories: 320, waterMl: 250 },
+    { time: "12:30", name: "Moong Dal Khichdi", calories: 450, waterMl: 300 },
+    { time: "19:30", name: "Steamed Veg + Ghee", calories: 420, waterMl: 250 },
   ];
 }
 
@@ -132,9 +132,9 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const loaded = load<ConsultRequest[]>("app:requests", []);
     if (loaded && loaded.length) return loaded;
     const seed: ConsultRequest[] = [
-      { id: "req_1001", userId: "u1001", doctorId: "d1", status: "accepted", createdAt: new Date(Date.now()-86400000).toISOString(), patientName: "Riya Sharma", patientDosha: "Pitta", plan: makePlan([{ time: "08:00", name: "Lemon Ginger Tea", calories: 40 }, { time: "13:00", name: "Veg Khichdi", calories: 420 }, { time: "19:30", name: "Steamed Veg + Ghee", calories: 400 }]) },
+      { id: "req_1001", userId: "u1001", doctorId: "d1", status: "accepted", createdAt: new Date(Date.now()-86400000).toISOString(), patientName: "Riya Sharma", patientDosha: "Pitta", plan: makePlan([{ time: "08:00", name: "Lemon Ginger Tea", calories: 40, waterMl: 200 }, { time: "13:00", name: "Veg Khichdi", calories: 420, waterMl: 300 }, { time: "19:30", name: "Steamed Veg + Ghee", calories: 400, waterMl: 250 }]) },
       { id: "req_1002", userId: "u1002", doctorId: "d1", status: "pending", createdAt: new Date().toISOString(), patientName: "Aarav Patel", patientDosha: "Vata" },
-      { id: "req_1003", userId: "u1003", doctorId: "d1", status: "accepted", createdAt: new Date(Date.now()-3600000).toISOString(), patientName: "Neha Gupta", patientDosha: "Kapha", plan: makePlan([{ time: "08:30", name: "Warm Oats", calories: 320 }, { time: "12:45", name: "Moong Dal Soup", calories: 380 }, { time: "19:00", name: "Millet Roti + Veg", calories: 450 }]) },
+      { id: "req_1003", userId: "u1003", doctorId: "d1", status: "accepted", createdAt: new Date(Date.now()-3600000).toISOString(), patientName: "Neha Gupta", patientDosha: "Kapha", plan: makePlan([{ time: "08:30", name: "Warm Oats", calories: 320, waterMl: 250 }, { time: "12:45", name: "Moong Dal Soup", calories: 380, waterMl: 300 }, { time: "19:00", name: "Millet Roti + Veg", calories: 450, waterMl: 250 }]) },
     ];
     return seed;
   });
