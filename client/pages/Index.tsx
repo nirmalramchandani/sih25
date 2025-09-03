@@ -8,26 +8,23 @@ import { useAppState, User } from "@/context/app-state";
 import Hero from "@/components/app/Hero";
 import FeatureCards from "@/components/app/FeatureCards";
 import StreakTracker from "@/components/app/StreakTracker";
+import NavBar from "@/components/app/NavBar";
+import Footer from "@/components/app/Footer";
+import { motion } from "framer-motion";
 
 export default function Index() {
   const { setCurrentUser } = useAppState();
   const [role, setRole] = useState<"user" | "doctor">("user");
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,theme(colors.white)_0%,hsl(var(--accent)/.08)_35%,transparent_60%),linear-gradient(to_bottom_right,hsl(var(--primary)/.07),transparent)]">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-md bg-[#0FA36B]" />
-          <div className="text-xl font-bold tracking-tight">AyurWell</div>
-        </div>
-        <div className="hidden gap-2 sm:flex"></div>
-      </header>
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,theme(colors.white)_0%,hsl(var(--muted)/.4)_30%,transparent_60%),linear-gradient(to_bottom_right,hsl(var(--primary)/.05),transparent)]">
+      <NavBar onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} onSignIn={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
 
       <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-10 md:grid-cols-2">
-        <div className="pt-4">
+        <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="pt-4">
           <Hero onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
-        </div>
-        <div id="auth-card" className="pt-4">
+        </motion.div>
+        <motion.div id="auth-card" initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="pt-4">
           <AuthArea
             onAuthed={(u) => {
               setCurrentUser(u);
@@ -35,16 +32,17 @@ export default function Index() {
             }}
             defaultRole={role}
           />
-        </div>
+        </motion.div>
       </main>
-      <section className="mx-auto grid max-w-6xl gap-6 px-6 pb-20 md:grid-cols-3">
-        <div className="md:col-span-2">
+      <section id="features" className="mx-auto grid max-w-6xl gap-6 px-6 pb-20 md:grid-cols-3">
+        <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="md:col-span-2">
           <FeatureCards />
-        </div>
-        <div>
+        </motion.div>
+        <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }}>
           <StreakTracker />
-        </div>
+        </motion.div>
       </section>
+      <Footer />
     </div>
   );
 }
