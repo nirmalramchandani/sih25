@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +10,6 @@ import FeatureCards from "@/components/app/FeatureCards";
 import StreakTracker from "@/components/app/StreakTracker";
 
 export default function Index() {
-  const navigate = useNavigate();
   const { setCurrentUser } = useAppState();
   const [role, setRole] = useState<"user" | "doctor">("user");
 
@@ -33,7 +31,7 @@ export default function Index() {
           <AuthArea
             onAuthed={(u) => {
               setCurrentUser(u);
-              navigate("/dashboard");
+              window.location.assign("/dashboard");
             }}
             defaultRole={role}
           />
