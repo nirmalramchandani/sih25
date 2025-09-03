@@ -33,30 +33,6 @@ export const Hero: React.FC<{ onGetStarted?: () => void }> = ({ onGetStarted }) 
             <div className="flex items-center gap-2"><Dumbbell className="h-4 w-4 text-foreground/70" /> Smart workouts</div>
           </div>
         </div>
-        <div className="relative">
-          <motion.div
-            initial={{ y: 12, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <Card className="relative mx-auto w-full max-w-sm overflow-hidden rounded-2xl border bg-white p-5 shadow-sm dark:bg-card">
-              <div className="mb-3 text-sm font-medium">Today</div>
-              <div className="grid grid-cols-3 gap-3">
-                <StatTile label="Calories" value="1,240" />
-                <StatTile label="Steps" value="8,932" />
-                <StatTile label="Minutes" value="42" />
-              </div>
-              <div className="mt-4 rounded-xl border bg-muted/40 p-4">
-                <div className="mb-1 text-xs text-muted-foreground">Weekly Activity</div>
-                <div className="flex h-16 items-end justify-between gap-1">
-                  {[40, 70, 55, 85, 60, 92, 50].map((h, i) => (
-                    <motion.div key={i} whileHover={{ scale: 1.02 }} className="w-full rounded-md bg-slate-400/60 shadow-[0_0_8px_rgba(0,0,0,0.03)]" style={{ height: `${h}%` }} />
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
       </div>
     </div>
   );
