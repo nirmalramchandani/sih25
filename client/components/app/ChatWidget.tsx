@@ -54,7 +54,7 @@ export const ChatWidget: React.FC = () => {
   return (
     <div className={cn("fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3")}>
       {open && (
-        <Card className="w-80 shadow-xl border-[#00FF40]/50">
+        <Card className="w-80 shadow-xl border-[#0FA36B]/50">
           <div className="flex items-center justify-between border-b px-3 py-2">
             <div className="text-sm font-semibold">Ayur Assistant</div>
             <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>Close</Button>
