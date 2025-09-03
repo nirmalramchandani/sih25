@@ -14,7 +14,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0FA36B]/10 to-[#0FA36B]/20">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-md bg-[#0FA36B]" />
           <div className="text-xl font-bold tracking-tight">AyurWell</div>
@@ -22,8 +22,8 @@ export default function Index() {
         <div className="hidden gap-2 sm:flex"></div>
       </header>
 
-      <main className="mx-auto grid max-w-6xl items-start gap-8 px-6 pb-16 md:grid-cols-2">
-        <div className="pt-4">
+      <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-20 md:grid-cols-2">
+        <div className="pt-8">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
             Ayurvedic Diet Management
           </h1>
@@ -106,17 +106,17 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
   }, [answers]);
 
   return (
-    <Card className="border-[#0FA36B]/40 shadow-lg">
-      <CardContent className="p-6">
+    <Card className="shadow-xl border border-[hsl(var(--primary)/.25)] bg-white/70 backdrop-blur-md dark:bg-card/60 rounded-2xl">
+      <CardContent className="p-6 sm:p-8">
         <Tabs value={active} onValueChange={(v) => setActive(v as typeof active)}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signup">Sign up</TabsTrigger>
-            <TabsTrigger value="login">Log in</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 rounded-lg bg-muted/50 p-1">
+            <TabsTrigger className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md" value="signup">Sign up</TabsTrigger>
+            <TabsTrigger className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-md" value="login">Log in</TabsTrigger>
           </TabsList>
           <div className="mt-4" />
           <div className="mb-3 grid grid-cols-2 gap-2">
-            <Button variant={role === "user" ? "default" : "outline"} onClick={() => setRole("user")}>Sign up as User</Button>
-            <Button variant={role === "doctor" ? "default" : "outline"} onClick={() => setRole("doctor")}>Sign up as Doctor</Button>
+            <Button variant={role === "user" ? "default" : "outline"} className="rounded-full" onClick={() => setRole("user")}>User</Button>
+            <Button variant={role === "doctor" ? "default" : "outline"} className="rounded-full" onClick={() => setRole("doctor")}>Doctor</Button>
           </div>
 
           <TabsContent value="signup" className="space-y-4">
@@ -142,7 +142,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
                   <div className="grid gap-1"><Label>Height (cm)</Label><Input type="number" value={height} onChange={(e)=>setHeight(parseInt(e.target.value||"0"))} /></div>
                   <div className="col-span-2 grid gap-1"><Label>Activity</Label><Input value={activity} onChange={(e)=>setActivity(e.target.value)} /></div>
                 </div>
-                <div className="mt-3 rounded-md border bg-muted/20 p-3">
+                <div className="mt-3 rounded-xl border bg-muted/30 p-3">
                   <div className="mb-2 text-sm font-medium">Dosha Assessment</div>
                   <div className="mb-2 text-xs text-muted-foreground">Answer the questions to estimate your predominant dosha.</div>
                   <div className="mb-3 h-1 w-full rounded bg-muted">
@@ -179,7 +179,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
             )}
 
             <label className="flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" checked={!!consent} onChange={(e)=>setConsent(e.target.checked)} /> I consent to storing my data locally for this demo</label>
-            <Button className="w-full" disabled={!consent} onClick={() => onAuthed({ id: `u_${Date.now()}`, name: name || "Guest", email, role, dosha: role === "user" ? dosha : null })}>Continue ({role === "user" ? `Dosha: ${dosha}` : "Doctor"})</Button>
+            <Button className="w-full h-10" disabled={!consent} onClick={() => onAuthed({ id: `u_${Date.now()}`, name: name || "Guest", email, role, dosha: role === "user" ? dosha : null })}>Continue ({role === "user" ? `Dosha: ${dosha}` : "Doctor"})</Button>
           </TabsContent>
 
           <TabsContent value="login" className="space-y-4">
@@ -189,9 +189,9 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
             </div>
             <div className="grid gap-2">
               <Label>Password</Label>
-              <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" />
+              <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="•���••••••" />
             </div>
-            <Button className="w-full" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: "Member", email, role: "user", dosha: "Kapha" })}>Log in</Button>
+            <Button className="w-full h-10" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: "Member", email, role: "user", dosha: "Kapha" })}>Log in</Button>
           </TabsContent>
         </Tabs>
       </CardContent>
