@@ -10,6 +10,7 @@ import FeatureCards from "@/components/app/FeatureCards";
 import StreakTracker from "@/components/app/StreakTracker";
 import NavBar from "@/components/app/NavBar";
 import Footer from "@/components/app/Footer";
+import Testimonials from "@/components/app/Testimonials";
 import { motion } from "framer-motion";
 
 export default function Index() {
@@ -17,7 +18,7 @@ export default function Index() {
   const [role, setRole] = useState<"user" | "doctor">("user");
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,theme(colors.white)_0%,hsl(var(--muted)/.4)_30%,transparent_60%),linear-gradient(to_bottom_right,hsl(var(--primary)/.05),transparent)]">
+    <div className="min-h-screen bg-white">
       <NavBar onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} onSignIn={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
 
       <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-10 md:grid-cols-2">
@@ -34,7 +35,7 @@ export default function Index() {
           />
         </motion.div>
       </main>
-      <section id="features" className="mx-auto grid max-w-6xl gap-6 px-6 pb-20 md:grid-cols-3">
+      <section id="features" className="mx-auto grid max-w-6xl gap-6 px-6 pb-12 md:grid-cols-3">
         <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="md:col-span-2">
           <FeatureCards />
         </motion.div>
@@ -42,6 +43,7 @@ export default function Index() {
           <StreakTracker />
         </motion.div>
       </section>
+      <Testimonials />
       <Footer />
     </div>
   );
