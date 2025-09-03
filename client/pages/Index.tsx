@@ -191,7 +191,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
               <Label>Password</Label>
               <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" />
             </div>
-            <Button className="w-full h-10" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: "Member", email, role: "user", dosha: "Kapha" })}>Log in</Button>
+            <Button className="w-full h-10" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: role === "doctor" ? "Dr. Member" : "Member", email, role, dosha: role === "user" ? "Kapha" : null })}>Log in</Button>
           </TabsContent>
         </Tabs>
       </CardContent>
