@@ -8,10 +8,9 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export default function DoctorDashboard() {
-  const { currentUser, doctors, requests, setRequests } = useAppState();
+  const { currentUser, doctors, requests, setRequests, conversations, addMessage } = useAppState();
   const [videoOpen, setVideoOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [messages, setMessages] = useState<{role:"doctor"|"patient"; text:string; ts:number}[]>([]);
   const [draft, setDraft] = useState("");
   const defaultPlan = [
     { time: "08:00", name: "Warm Spiced Oats", calories: 320 },
@@ -149,9 +148,10 @@ export default function DoctorDashboard() {
   const isApproved = selectedReq.status === "accepted";
 
   const send = () => {
-    if (!draft.trim()) return;
-    setMessages((m)=> m.concat({ role: "doctor", text: draft.trim(), ts: Date.now() }, { role: "patient", text: "Thanks, noted!", ts: Date.now()+200 }));
+    if (!draft.trim() || !selectedReq) return;
+    addMessage(selectedReq.id, { from: "doctor", text: draft.trim() });
     setDraft("");
+    setTimeout(() => addMessage(selectedReq.id, { from: "patient", text: "Thanks, noted!" }), 300);
   };
 
   return (
@@ -206,7 +206,7 @@ export default function DoctorDashboard() {
           </Table>
           <div className="mt-3 flex gap-2">
             <Button disabled={!isApproved} onClick={()=>setPlan(p=>[...p,{time:"16:00",name:"Herbal Tea",calories:60}])}>Add Row</Button>
-            <Button disabled={!isApproved} onClick={()=> setRequests(requests.map(r => r.id === selectedReq.id ? { ...r, plan } : r))}>Save Plan</Button>
+            <Button disabled={!isApproved} onClick={()=> { setRequests(requests.map(r => r.id === selectedReq.id ? { ...r, plan } : r)); const kcal = plan.reduce((s,p)=> s + (p.calories || 0), 0); addMessage(selectedReq.id, { from: "system", text: `Diet plan updated • ${plan.length} items • ${kcal} kcal total.` }); }}>Save Plan</Button>
             <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" disabled={!isApproved}>Video Call</Button>
@@ -231,16 +231,16 @@ export default function DoctorDashboard() {
                   <div className="flex h-full flex-col">
                     <div className="border-b px-4 py-2 text-xs text-muted-foreground">Secure consultation chat (mock)</div>
                     <div id="chat-scroll" className="flex-1 space-y-3 overflow-y-auto p-3 text-sm">
-                      {messages.length === 0 && (
+                      {(!conversations[selectedReq.id] || conversations[selectedReq.id].length === 0) && (
                         <div className="text-center text-xs text-muted-foreground">No messages yet. Say hello 👋</div>
                       )}
-                      {messages.map((m, i) => (
-                        <div key={i} className={m.role === "doctor" ? "flex justify-end" : "flex justify-start"}>
+                      {(conversations[selectedReq.id] || []).map((m, i) => (
+                        <div key={m.id || i} className={m.from === "doctor" ? "flex justify-end" : m.from === "patient" ? "flex justify-start" : "flex justify-center"}>
                           <div className="max-w-[75%]">
-                            <div className={m.role === "doctor" ? "text-right text-[10px] text-muted-foreground" : "text-[10px] text-muted-foreground"}>
+                            <div className={m.from === "doctor" ? "text-right text-[10px] text-muted-foreground" : "text-[10px] text-muted-foreground"}>
                               {new Date(m.ts).toLocaleTimeString()}
                             </div>
-                            <div className={m.role === "doctor" ? "rounded-2xl bg-primary px-3 py-2 text-primary-foreground shadow-sm" : "rounded-2xl bg-muted px-3 py-2 shadow-sm"}>
+                            <div className={m.from === "doctor" ? "rounded-2xl bg-primary px-3 py-2 text-primary-foreground shadow-sm" : m.from === "patient" ? "rounded-2xl bg-muted px-3 py-2 shadow-sm" : "rounded-md bg-secondary px-3 py-1 text-xs text-secondary-foreground"}>
                               {m.text}
                             </div>
                           </div>
