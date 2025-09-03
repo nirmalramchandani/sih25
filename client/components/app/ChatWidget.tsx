@@ -17,6 +17,17 @@ export const ChatWidget: React.FC = () => {
   const { markMealTaken, updateWater } = useAppState();
   const [uploadName, setUploadName] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const offsetRef = useRef<{dx:number; dy:number}>({ dx: 0, dy: 0 });
+  const [pos, setPos] = useState<{x:number; y:number}>(() => {
+    try {
+      const x = parseInt(localStorage.getItem("app:chat:x") || "");
+      const y = parseInt(localStorage.getItem("app:chat:y") || "");
+      if (!Number.isNaN(x) && !Number.isNaN(y)) return { x, y };
+    } catch {}
+    return { x: 24, y: 24 };
+  });
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -25,6 +36,44 @@ export const ChatWidget: React.FC = () => {
   useEffect(()=>{
     try { localStorage.setItem("app:chatOpen", open ? "1" : "0"); } catch {}
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (pos.x === 24 && pos.y === 24 && typeof window !== 'undefined') {
+      const w = 416; // ~w-96
+      const h = 520;
+      setPos({ x: Math.max(8, window.innerWidth - w - 16), y: Math.max(8, window.innerHeight - h - 16) });
+    }
+  }, [open]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("app:chat:x", String(pos.x));
+      localStorage.setItem("app:chat:y", String(pos.y));
+    } catch {}
+  }, [pos]);
+
+  const onMouseDownHeader = (e: React.MouseEvent) => {
+    if (!open) return;
+    draggingRef.current = true;
+    offsetRef.current = { dx: e.clientX - pos.x, dy: e.clientY - pos.y };
+    const onMove = (ev: MouseEvent) => {
+      if (!draggingRef.current) return;
+      const rect = containerRef.current?.getBoundingClientRect();
+      const cw = rect?.width || 416;
+      const ch = rect?.height || 520;
+      const nx = Math.min(Math.max(0, ev.clientX - offsetRef.current.dx), (window.innerWidth - cw));
+      const ny = Math.min(Math.max(0, ev.clientY - offsetRef.current.dy), (window.innerHeight - ch));
+      setPos({ x: nx, y: ny });
+    };
+    const onUp = () => {
+      draggingRef.current = false;
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -52,14 +101,15 @@ export const ChatWidget: React.FC = () => {
   };
 
   return (
-    <div className={cn("fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3")}>
+    <div className={cn("fixed z-40 flex flex-col items-end gap-3")}>
       {open && (
-        <Card className="w-80 shadow-xl border-[#0FA36B]/50">
-          <div className="flex items-center justify-between border-b px-3 py-2">
+        <div ref={containerRef} style={{ left: pos.x, top: pos.y, position: 'fixed' }}>
+          <Card className="w-96 shadow-xl border-[#0FA36B]/50">
+          <div className="flex cursor-move items-center justify-between border-b px-3 py-2" onMouseDown={onMouseDownHeader}>
             <div className="text-sm font-semibold">Ayur Assistant</div>
             <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>Close</Button>
           </div>
-          <div className="max-h-64 space-y-2 overflow-y-auto p-3 text-sm">
+          <div className="max-h-96 space-y-2 overflow-y-auto p-3 text-sm">
             {messages.map((m, i) => (
               <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
                 <div>
@@ -83,9 +133,10 @@ export const ChatWidget: React.FC = () => {
             <Button className="w-full" onClick={handleSend}>Send</Button>
           </div>
         </Card>
+        </div>
       )}
       {!open && (
-        <Button size="lg" className="h-12 w-12 rounded-full shadow-lg" onClick={() => setOpen(true)}>
+        <Button size="lg" className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg" onClick={() => setOpen(true)}>
           <MessageCircle />
         </Button>
       )}
