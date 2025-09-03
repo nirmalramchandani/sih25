@@ -2,11 +2,11 @@ import React from "react";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="border-t bg-white/70 py-10 text-sm text-muted-foreground dark:bg-background/60">
+    <footer className="border-t bg-muted/40 py-10 text-sm text-muted-foreground dark:bg-background/60">
       <div className="mx-auto grid max-w-6xl gap-6 px-6 md:grid-cols-3">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-foreground">
-            <div className="h-6 w-6 rounded-md bg-gradient-to-br from-emerald-400 to-green-600" />
+            <div className="h-6 w-6 rounded-md bg-slate-900" />
             <span className="font-semibold">AyurWell</span>
           </div>
           <p className="max-w-sm">Premium fitness and wellness for modern life. Simple, mindful, effective.</p>
