@@ -13,7 +13,7 @@ export default function Index() {
   const [role, setRole] = useState<"user" | "doctor">("user");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0FA36B]/10 to-[#0FA36B]/20">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,theme(colors.white)_0%,hsl(var(--accent)/.08)_35%,transparent_60%),linear-gradient(to_bottom_right,hsl(var(--primary)/.07),transparent)]">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-md bg-[#0FA36B]" />
@@ -189,7 +189,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
             </div>
             <div className="grid gap-2">
               <Label>Password</Label>
-              <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="•���••••••" />
+              <Input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" />
             </div>
             <Button className="w-full h-10" onClick={() => onAuthed({ id: `u_${Date.now()}`, name: "Member", email, role: "user", dosha: "Kapha" })}>Log in</Button>
           </TabsContent>
