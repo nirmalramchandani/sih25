@@ -15,6 +15,8 @@ import Recipes from "./pages/Recipes";
 import Scan from "./pages/Scan";
 import { AppLayout } from "./components/app/Layout";
 import { AppStateProvider, useAppState } from "@/context/app-state";
+import { lazy, Suspense } from "react";
+const DoctorMessagesLazy = lazy(() => import("./pages/DoctorMessages"));
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { currentUser } = useAppState();
@@ -38,7 +40,7 @@ const AppRoutes = () => (
       <Route path="/recipes" element={<Recipes />} />
       <Route path="/scan" element={<Scan />} />
       <Route path="/doctor" element={<DoctorDashboard />} />
-      <Route path="/doctor/messages" element={<React.Suspense fallback={null}><DoctorMessagesLazy /></React.Suspense>} />
+      <Route path="/doctor/messages" element={<Suspense fallback={null}><DoctorMessagesLazy /></Suspense>} />
     </Route>
     <Route path="*" element={<NotFound />} />
   </Routes>
