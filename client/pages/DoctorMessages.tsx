@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 export default function DoctorMessages() {
   const { currentUser, doctors, requests, conversations, addMessage } = useAppState();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
 
