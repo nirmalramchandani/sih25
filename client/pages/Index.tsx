@@ -19,7 +19,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-white">
-      <NavBar onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} onSignIn={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+      <NavBar onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} onSignIn={() => window.location.assign("/login")} />
 
       <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-10 md:grid-cols-2">
         <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="pt-4">

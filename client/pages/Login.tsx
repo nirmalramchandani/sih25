@@ -1,0 +1,84 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Mail, Lock, Chrome } from "lucide-react";
+import { useAppState } from "@/context/app-state";
+
+export default function Login() {
+  const { setCurrentUser } = useAppState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  function handleLogin() {
+    if (!email || !password) {
+      setError("Please enter your email and password");
+      return;
+    }
+    setCurrentUser({ id: `u_${Date.now()}`, name: email.split("@")[0] || "Member", email, role: "user", dosha: "Kapha" });
+    window.location.assign("/dashboard");
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="mx-auto flex h-screen max-w-6xl items-center justify-center px-6">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="w-full max-w-md">
+          <Card className="rounded-2xl border bg-white shadow-sm">
+            <CardContent className="p-8">
+              <div className="mb-6 text-center">
+                <div className="mx-auto mb-3 h-10 w-10 rounded-lg bg-slate-900" />
+                <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Log in to your account</p>
+              </div>
+
+              {error && (
+                <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </motion.div>
+              )}
+
+              <div className="space-y-4">
+                <div className="grid gap-2">
+                  <Label>Email</Label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-9 focus-visible:ring-2" />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label>Password</Label>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9 focus-visible:ring-2" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <a className="text-muted-foreground underline-offset-4 hover:underline" href="#">Forgot password?</a>
+                </div>
+                <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                  <Button className="h-10 w-full rounded-full" onClick={handleLogin}>Log in</Button>
+                </motion.div>
+
+                <div className="my-2 flex items-center gap-3">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-xs text-muted-foreground">or</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <Button variant="outline" className="h-10 w-full rounded-full">
+                  <Chrome className="mr-2 h-4 w-4" /> Continue with Google
+                </Button>
+              </div>
+
+              <div className="mt-6 text-center text-sm text-muted-foreground">
+                Don’t have an account? <a className="underline-offset-4 hover:underline" href="/">Sign up</a>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
