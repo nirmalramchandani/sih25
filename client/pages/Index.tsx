@@ -13,10 +13,10 @@ export default function Index() {
   const [role, setRole] = useState<"user" | "doctor">("user");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-lime-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#00FF40]/10 to-[#00FF40]/20">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-md bg-gradient-to-br from-emerald-400 to-lime-500" />
+          <div className="h-9 w-9 rounded-md bg-[#00FF40]" />
           <div className="text-xl font-bold tracking-tight">AyurWell</div>
         </div>
         <div className="hidden gap-2 sm:flex"></div>
@@ -106,7 +106,7 @@ const AuthArea: React.FC<{ onAuthed: (u: User) => void; defaultRole: "user" | "d
   }, [answers]);
 
   return (
-    <Card className="border-emerald-200/40 shadow-lg">
+    <Card className="border-[#00FF40]/40 shadow-lg">
       <CardContent className="p-6">
         <Tabs value={active} onValueChange={(v) => setActive(v as typeof active)}>
           <TabsList className="grid w-full grid-cols-2">
