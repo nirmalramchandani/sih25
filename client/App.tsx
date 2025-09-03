@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
@@ -24,6 +24,18 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+const UserGuard: React.FC = () => {
+  const { currentUser } = useAppState();
+  if (currentUser?.role !== "user") return <Navigate to="/doctor" replace />;
+  return <Outlet />;
+};
+
+const DoctorGuard: React.FC = () => {
+  const { currentUser } = useAppState();
+  if (currentUser?.role !== "doctor") return <Navigate to="/dashboard" replace />;
+  return <Outlet />;
+};
+
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Index />} />
@@ -34,13 +46,17 @@ const AppRoutes = () => (
         </ProtectedRoute>
       }
     >
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/diet-plan" element={<DietPlanPage />} />
-      <Route path="/tracking" element={<Tracking />} />
-      <Route path="/recipes" element={<Recipes />} />
-      <Route path="/scan" element={<Scan />} />
-      <Route path="/doctor" element={<DoctorDashboard />} />
-      <Route path="/doctor/messages" element={<Suspense fallback={null}><DoctorMessagesLazy /></Suspense>} />
+      <Route element={<UserGuard />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/diet-plan" element={<DietPlanPage />} />
+        <Route path="/tracking" element={<Tracking />} />
+        <Route path="/recipes" element={<Recipes />} />
+        <Route path="/scan" element={<Scan />} />
+      </Route>
+      <Route element={<DoctorGuard />}>
+        <Route path="/doctor" element={<DoctorDashboard />} />
+        <Route path="/doctor/messages" element={<Suspense fallback={null}><DoctorMessagesLazy /></Suspense>} />
+      </Route>
     </Route>
     <Route path="*" element={<NotFound />} />
   </Routes>
