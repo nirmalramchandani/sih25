@@ -43,6 +43,9 @@ export type ConsultRequest = {
   doctorId: string;
   status: "pending" | "accepted" | "rejected";
   createdAt: string;
+  patientName?: string;
+  patientDosha?: User["dosha"];
+  plan?: { time: string; name: string; calories: number }[];
 };
 
 export type Notification = {

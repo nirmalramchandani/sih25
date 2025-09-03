@@ -125,7 +125,7 @@ export default function Dashboard() {
                         <Badge variant="secondary">★ {d.rating}</Badge>
                       </div>
                       <Button className="mt-3 w-full" onClick={() => {
-                        setRequests((r) => r.concat({ id: `req_${Date.now()}`, userId: "me", doctorId: d.id, status: "pending", createdAt: new Date().toISOString() }));
+                        setRequests((r) => r.concat({ id: `req_${Date.now()}`, userId: currentUser?.id || "me", doctorId: d.id, status: "pending", createdAt: new Date().toISOString(), patientName: currentUser?.name, patientDosha: currentUser?.dosha }));
                         setConnectOpen(false);
                         addNotification({ type: "doctor", title: "Consultation requested", message: `We’ll connect you with ${d.name} shortly.` });
                         toast({ title: "Consultation requested", description: `We’ll connect you with ${d.name} shortly. You’ll see updates in Notifications.` });

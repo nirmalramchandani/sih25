@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAppState } from "@/context/app-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,12 @@ export default function DoctorDashboard() {
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<{role:"doctor"|"patient"; text:string; ts:number}[]>([]);
   const [draft, setDraft] = useState("");
-  const [plan, setPlan] = useState([
+  const defaultPlan = [
     { time: "08:00", name: "Warm Spiced Oats", calories: 320 },
     { time: "12:30", name: "Moong Dal Khichdi", calories: 450 },
     { time: "19:30", name: "Steamed Veg + Ghee", calories: 420 },
-  ]);
+  ];
+  const [plan, setPlan] = useState(defaultPlan);
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<"requests" | "patients">("requests");
 
@@ -36,6 +37,11 @@ export default function DoctorDashboard() {
   const reject = (id: string) => setRequests(requests.map(r => r.id === id ? { ...r, status: "rejected" } : r));
 
   const selectedReq = useMemo(()=> requests.find(r=>r.id===selected) || null, [requests, selected]);
+  useEffect(() => {
+    if (selectedReq) {
+      setPlan(selectedReq.plan && selectedReq.plan.length ? selectedReq.plan : defaultPlan);
+    }
+  }, [selectedReq?.id]);
   const pendingForMe = useMemo(()=> requests.filter(r=>r.doctorId === doctorProfileId && r.status === "pending"), [requests, doctorProfileId]);
   const myPatients = useMemo(()=> requests.filter(r=>r.doctorId === doctorProfileId && r.status === "accepted"), [requests, doctorProfileId]);
 
@@ -118,7 +124,7 @@ export default function DoctorDashboard() {
                         {myPatients.map((r)=> (
                           <TableRow key={r.id} className="hover:bg-muted/40">
                             <TableCell className="font-mono text-xs">{r.id}</TableCell>
-                            <TableCell>{`Patient ${r.userId}`}</TableCell>
+                            <TableCell>{r.patientName || `Patient ${r.userId}`}</TableCell>
                             <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={()=> setSelected(r.id)}>Open</Button></TableCell>
                           </TableRow>
                         ))}
@@ -136,9 +142,8 @@ export default function DoctorDashboard() {
 
   const patient = {
     id: selectedReq.userId,
-    name: `Patient ${selectedReq.userId.slice(-4)}`,
-    age: 30,
-    dosha: ["Vata","Pitta","Kapha"][Math.floor(Math.random()*3)],
+    name: selectedReq.patientName || `Patient ${selectedReq.userId}`,
+    dosha: selectedReq.patientDosha || null,
   };
 
   const isApproved = selectedReq.status === "accepted";
@@ -157,11 +162,10 @@ export default function DoctorDashboard() {
             <CardTitle>Patient Details</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-2 sm:grid-cols-4">
+            <div className="grid gap-2 sm:grid-cols-3">
               <div><div className="text-xs text-muted-foreground">ID</div><div className="font-mono">{patient.id}</div></div>
               <div><div className="text-xs text-muted-foreground">Name</div><div className="font-medium">{patient.name}</div></div>
-              <div><div className="text-xs text-muted-foreground">Age</div><div>{patient.age}</div></div>
-              <div><div className="text-xs text-muted-foreground">Dosha</div><div className="font-medium">{patient.dosha}</div></div>
+              <div><div className="text-xs text-muted-foreground">Dosha</div><div className="font-medium">{patient.dosha || "-"}</div></div>
             </div>
           </CardContent>
         </Card>
@@ -202,6 +206,7 @@ export default function DoctorDashboard() {
           </Table>
           <div className="mt-3 flex gap-2">
             <Button disabled={!isApproved} onClick={()=>setPlan(p=>[...p,{time:"16:00",name:"Herbal Tea",calories:60}])}>Add Row</Button>
+            <Button disabled={!isApproved} onClick={()=> setRequests(requests.map(r => r.id === selectedReq.id ? { ...r, plan } : r))}>Save Plan</Button>
             <Dialog open={videoOpen} onOpenChange={setVideoOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" disabled={!isApproved}>Video Call</Button>
