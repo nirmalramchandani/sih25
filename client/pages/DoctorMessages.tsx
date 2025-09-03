@@ -31,8 +31,17 @@ export default function DoctorMessages() {
     if (!activeId) return;
     const has = (conversations[activeId] || []).length > 0;
     if (!has) {
-      addMessage(activeId, { from: "system", text: "Consultation channel opened." });
-      addMessage(activeId, { from: "patient", text: "Hello doctor, could you review my diet plan?" });
+      const name = activePatient?.patientName || `Patient ${activePatient?.userId || ""}`;
+      const dosha = activePatient?.patientDosha;
+      const greeting = dosha === "Vata"
+        ? "Hello doctor, I feel a bit anxious and dry lately. Can we adjust my plan?"
+        : dosha === "Pitta"
+        ? "Hello doctor, I’ve had some acidity and heat. Please review my meals."
+        : dosha === "Kapha"
+        ? "Hello doctor, I’m feeling heavy and sluggish. Any lighter options?"
+        : "Hello doctor, could you review my diet plan?";
+      addMessage(activeId, { from: "system", text: `Consultation started with ${name}.` });
+      addMessage(activeId, { from: "patient", text: greeting });
     }
   }, [activeId]);
 
