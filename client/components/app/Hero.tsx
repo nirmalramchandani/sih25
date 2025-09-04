@@ -24,7 +24,7 @@ export const Hero: React.FC<{
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl mt-[200px]"
-            style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 1)" }}
+            style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 1)", fontFamily: "Italiana, serif", letterSpacing: "-1.2px" }}
           >
             Balance Fitness & Ayurveda for a Healthier You
           </motion.h1>
@@ -32,7 +32,8 @@ export const Hero: React.FC<{
             initial={{ x: -24, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-            className="mt-3 max-w-prose text-white/85"
+            className="mt-3 max-w-[517px] text-white/85"
+            style={{ fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial" }}
           >
             Calm, professional guidance blending workouts, nutrition, and Ayurvedic wisdom.
           </motion.p>
