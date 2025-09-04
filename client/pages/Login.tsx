@@ -23,6 +23,17 @@ export default function Login() {
     }
   }, []);
 
+  const mode = useMemo(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("mode") === "signup" ? "signup" : "login";
+    } catch {
+      return "login" as const;
+    }
+  }, []);
+
+  const [name, setName] = useState("");
+
   function handleLogin() {
     if (!email || !password) {
       setError("Please enter your email and password");
@@ -46,8 +57,8 @@ export default function Login() {
             <CardContent className="p-8">
               <div className="mb-6 text-center">
                 <div className="mx-auto mb-3 h-10 w-10 rounded-lg bg-slate-900" />
-                <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-                <p className="mt-1 text-sm text-muted-foreground">Log in to your {role === "doctor" ? "doctor" : "user"} account</p>
+                <h1 className="text-2xl font-semibold tracking-tight">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
+                <p className="mt-1 text-sm text-muted-foreground">{mode === "signup" ? `Sign up as ${role}` : `Log in to your ${role} account`}</p>
               </div>
 
               {error && (
@@ -57,6 +68,12 @@ export default function Login() {
               )}
 
               <div className="space-y-4">
+                {mode === "signup" && (
+                  <div className="grid gap-2">
+                    <Label>Name</Label>
+                    <Input placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
+                  </div>
+                )}
                 <div className="grid gap-2">
                   <Label>Email</Label>
                   <div className="relative">
@@ -75,7 +92,11 @@ export default function Login() {
                   <a className="text-muted-foreground underline-offset-4 hover:underline" href="#">Forgot password?</a>
                 </div>
                 <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                  <Button className="h-10 w-full rounded-full" onClick={handleLogin}>Log in</Button>
+                  <Button className="h-10 w-full rounded-full" onClick={mode === "signup" ? () => {
+                    if (!email || !password) { setError("Please enter your email and password"); return; }
+                    setCurrentUser({ id: `u_${Date.now()}`, name: name || (role === "doctor" ? `Dr. ${email.split("@")[0] || "Member"}` : (email.split("@")[0] || "Member")), email, role, dosha: role === "user" ? "Kapha" : null });
+                    window.location.assign("/dashboard");
+                  } : handleLogin}>{mode === "signup" ? "Create account" : "Log in"}</Button>
                 </motion.div>
 
                 <div className="my-2 flex items-center gap-3">
@@ -89,7 +110,11 @@ export default function Login() {
               </div>
 
               <div className="mt-6 text-center text-sm text-muted-foreground">
-                Don’t have an account? <a className="underline-offset-4 hover:underline" href="/">Sign up</a>
+                {mode === "signup" ? (
+                  <>Already have an account? <a className="underline-offset-4 hover:underline" href={`/login?role=${role}`}>Log in</a></>
+                ) : (
+                  <>Don’t have an account? <a className="underline-offset-4 hover:underline" href={`/login?mode=signup&role=${role}`}>Sign up</a></>
+                )}
               </div>
             </CardContent>
           </Card>
