@@ -50,8 +50,8 @@ export const Hero: React.FC<{ onGetStarted?: () => void; onLoginUser?: () => voi
         <div className="relative">
           <motion.div initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
             <img
-              src="https://images.pexels.com/photos/7319717/pexels-photo-7319717.jpeg"
-              alt="Woman in calm yoga pose, arms extended, in neutral setting."
+              src="https://images.pexels.com/photos/3621234/pexels-photo-3621234.jpeg"
+              alt="Ayurvedic flat lay with natural herbs, flowers, and wellness ingredients in a clean neutral setting."
               className="aspect-[4/3] w-full rounded-3xl border object-cover shadow-sm"
               loading="lazy"
             />
