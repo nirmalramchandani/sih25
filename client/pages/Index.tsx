@@ -11,17 +11,19 @@ export default function Index() {
       className="min-h-screen w-full bg-fixed bg-cover bg-center text-white"
       style={{ backgroundImage: `url(${bgUrl})` }}
     >
-      <NavBar onGetStarted={() => window.location.assign("/login")} onSignIn={() => window.location.assign("/login")} />
+      <div className="relative z-10">
+        <NavBar onGetStarted={() => window.location.assign("/login")} onSignIn={() => window.location.assign("/login")} />
 
-      <Hero
-        onLoginUser={() => window.location.assign("/login?role=user")}
-        onRegisterUser={() => window.location.assign("/login?role=user")}
-        onLoginDoctor={() => window.location.assign("/login?role=doctor")}
-        onRegisterDoctor={() => window.location.assign("/login?role=doctor")}
-      />
+        <Hero
+          onLoginUser={() => window.location.assign("/login?role=user")}
+          onRegisterUser={() => window.location.assign("/login?role=user")}
+          onLoginDoctor={() => window.location.assign("/login?role=doctor")}
+          onRegisterDoctor={() => window.location.assign("/login?role=doctor")}
+        />
 
-      <Testimonials />
-      <Footer />
+        <Testimonials />
+        <Footer />
+      </div>
     </div>
   );
 }
