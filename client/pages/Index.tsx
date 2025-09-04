@@ -23,7 +23,13 @@ export default function Index() {
 
       <main className="mx-auto grid max-w-6xl items-start gap-10 px-6 pb-10 md:grid-cols-2">
         <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="pt-4">
-          <Hero onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })} />
+          <Hero
+            onGetStarted={() => document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            onLoginUser={() => window.location.assign("/login?role=user")}
+            onRegisterUser={() => { setRole("user"); document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+            onLoginDoctor={() => window.location.assign("/login?role=doctor")}
+            onRegisterDoctor={() => { setRole("doctor"); document.getElementById("auth-card")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+          />
         </motion.div>
         <motion.div id="auth-card" initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="pt-4">
           <AuthArea
