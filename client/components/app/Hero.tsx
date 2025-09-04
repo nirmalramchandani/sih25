@@ -8,10 +8,10 @@ import { Flame, Sparkles, Dumbbell, User as UserIcon, Stethoscope } from "lucide
 export const Hero: React.FC<{ onGetStarted?: () => void; onLoginUser?: () => void; onRegisterUser?: () => void; onLoginDoctor?: () => void; onRegisterDoctor?: () => void }> = ({ onGetStarted, onLoginUser, onRegisterUser, onLoginDoctor, onRegisterDoctor }) => {
   return (
     <div className="relative overflow-hidden rounded-3xl border p-8 shadow-sm ring-1 ring-black/5 min-h-[520px] md:min-h-[640px]">
-      <img src="https://images.pexels.com/photos/3621234/pexels-photo-3621234.jpeg" alt="Ayurvedic background of natural herbs and wellness ingredients" className="absolute inset-0 -z-10 h-full w-full object-cover" />
-      <div className="absolute inset-0 -z-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+      <img src="https://images.pexels.com/photos/3621234/pexels-photo-3621234.jpeg" alt="Ayurvedic background of natural herbs and wellness ingredients" className="absolute inset-0 z-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
       <div className="relative grid items-center gap-8 md:grid-cols-2">
-        <div className="space-y-5">
+        <div className="relative z-20 space-y-5">
           <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium bg-white/10 text-white">
             <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-foreground/70" /> Premium Fitness & Wellness</span>
           </Badge>
