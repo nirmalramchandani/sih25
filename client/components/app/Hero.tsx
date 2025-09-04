@@ -15,7 +15,7 @@ export const Hero: React.FC<{
       className="relative min-h-[377px] w-full"
     >
       {/* Subtle gradient overlay for readability: only behind content area */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-0 w-full md:w-2/3 bg-fixed bg-[linear-gradient(to_right,rgba(0,0,0,0.65)_0%,rgba(0,0,0,0.45)_30%,rgba(0,0,0,0.2)_55%,transparent_85%)]" />
+      <div className="pointer-events-none fixed inset-0 z-0 w-full bg-[linear-gradient(to_right,rgba(0,0,0,0.65)_0%,rgba(0,0,0,0.45)_28%,rgba(0,0,0,0.2)_52%,transparent_82%)]" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-6 py-20">
