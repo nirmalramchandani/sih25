@@ -14,8 +14,8 @@ export const Hero: React.FC<{
       aria-label="Hero"
       className="relative min-h-screen w-full"
     >
-      {/* Subtle gradient overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-transparent" />
+      {/* Subtle gradient overlay for readability: only behind content area */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-0 w-full md:w-1/2 bg-gradient-to-r from-black/50 via-black/40 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-6 py-20">
