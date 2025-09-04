@@ -8,13 +8,11 @@ export const Hero: React.FC<{
   onLoginDoctor?: () => void;
   onRegisterDoctor?: () => void;
 }> = ({ onLoginUser, onRegisterUser, onLoginDoctor, onRegisterDoctor }) => {
-  const bgUrl = "https://images.pexels.com/photos/3621234/pexels-photo-3621234.jpeg";
 
   return (
     <section
       aria-label="Hero"
-      className="relative min-h-screen w-full bg-fixed bg-cover bg-center"
-      style={{ backgroundImage: `url(${bgUrl})` }}
+      className="relative min-h-screen w-full"
     >
       {/* Subtle gradient overlay for readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/40 to-transparent" />
