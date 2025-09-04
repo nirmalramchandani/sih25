@@ -12,19 +12,20 @@ export const Hero: React.FC<{
   return (
     <section
       aria-label="Hero"
-      className="relative min-h-screen w-full"
+      className="relative min-h-[377px] w-full"
     >
       {/* Subtle gradient overlay for readability: only behind content area */}
       <div className="pointer-events-none absolute inset-y-0 left-0 z-0 w-full md:w-1/2 bg-gradient-to-r from-black/50 via-black/40 to-transparent" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-6 py-20">
-        <div className="w-full text-white md:w-1/2 sm:max-w-md md:max-w-none mx-auto md:mx-0 text-center md:text-left">
+        <div className="flex flex-col justify-center items-start text-white w-[53%] ml-[29px] mt-[27px] mb-auto text-left">
           <motion.h1
             initial={{ x: -24, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl"
+            className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl mt-[200px]"
+            style={{ textShadow: "1px 1px 3px rgba(0, 0, 0, 1)" }}
           >
             Balance Fitness & Ayurveda for a Healthier You
           </motion.h1>
