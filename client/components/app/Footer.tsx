@@ -8,7 +8,8 @@ export const Footer: React.FC = () => {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5 }}
-      className="bg-transparent py-8 text-white/85"
+      className="bg-transparent py-8 text-white/90"
+      style={{ textShadow: "0 1px 2px rgba(0,0,0,.55)" }}
     >
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-6 px-6 md:grid-cols-3">
         {/* Left: brand */}
