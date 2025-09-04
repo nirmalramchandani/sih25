@@ -21,7 +21,7 @@ export const Hero: React.FC<{
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-6 py-20">
-        <div className="w-full text-white md:w-1/2">
+        <div className="w-full text-white md:w-1/2 sm:max-w-md md:max-w-none mx-auto md:mx-0 text-center md:text-left">
           <motion.h1
             initial={{ x: -24, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
