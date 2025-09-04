@@ -30,8 +30,8 @@ export const Testimonials: React.FC = () => {
   return (
     <section id="testimonials" className="mx-auto max-w-6xl px-6 pb-20">
       <div className="mb-6 text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">Loved by a thoughtful community</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Minimal, focused, and designed to last.</p>
+        <h2 className="text-2xl font-semibold tracking-tight text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,.6)" }}>Loved by a thoughtful community</h2>
+        <p className="mt-2 text-sm text-white/85" style={{ textShadow: "0 1px 2px rgba(0,0,0,.6)" }}>Minimal, focused, and designed to last.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         {testimonials.map((t, i) => (
