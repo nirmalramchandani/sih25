@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppState, User } from "@/context/app-state";
 import Hero from "@/components/app/Hero";
-import FeatureCards from "@/components/app/FeatureCards";
-import StreakTracker from "@/components/app/StreakTracker";
+import ImageGallery from "@/components/app/ImageGallery";
 import NavBar from "@/components/app/NavBar";
 import Footer from "@/components/app/Footer";
 import Testimonials from "@/components/app/Testimonials";
@@ -32,13 +31,15 @@ export default function Index() {
           />
         </motion.div>
       </main>
-      <section id="features" className="mx-auto grid max-w-6xl gap-6 px-6 pb-12 md:grid-cols-3">
-        <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }} className="md:col-span-2">
-          <FeatureCards />
-        </motion.div>
-        <motion.div initial={{ y: 16, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5 }}>
-          <StreakTracker />
-        </motion.div>
+      <section id="gallery" className="mx-auto max-w-6xl px-6 pb-12">
+        <ImageGallery
+          items={[
+            { src: "https://images.pexels.com/photos/3621234/pexels-photo-3621234.jpeg", alt: "Ayurvedic flat lay with natural herbs and wellness ingredients." },
+            { src: "https://images.pexels.com/photos/6621432/pexels-photo-6621432.jpeg", alt: "Mortar, pestle, and natural elements in a minimal neutral setup." },
+            { src: "https://images.pexels.com/photos/6693969/pexels-photo-6693969.jpeg", alt: "Essential oil bottles with stones in a calm arrangement." },
+            { src: "https://images.pexels.com/photos/4151292/pexels-photo-4151292.jpeg", alt: "Yoga at home with minimal neutral background." },
+          ]}
+        />
       </section>
       <Testimonials />
       <Footer />
