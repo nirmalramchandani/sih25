@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,22 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  const role = useMemo(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const r = params.get("role");
+      return (r === "doctor" ? "doctor" : "user") as "user" | "doctor";
+    } catch {
+      return "user" as const;
+    }
+  }, []);
+
   function handleLogin() {
     if (!email || !password) {
       setError("Please enter your email and password");
       return;
     }
-    setCurrentUser({ id: `u_${Date.now()}`, name: email.split("@")[0] || "Member", email, role: "user", dosha: "Kapha" });
+    setCurrentUser({ id: `u_${Date.now()}`, name: role === "doctor" ? `Dr. ${email.split("@")[0] || "Member"}` : (email.split("@")[0] || "Member"), email, role, dosha: role === "user" ? "Kapha" : null });
     window.location.assign("/dashboard");
   }
 
@@ -31,7 +41,7 @@ export default function Login() {
               <div className="mb-6 text-center">
                 <div className="mx-auto mb-3 h-10 w-10 rounded-lg bg-slate-900" />
                 <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
-                <p className="mt-1 text-sm text-muted-foreground">Log in to your account</p>
+                <p className="mt-1 text-sm text-muted-foreground">Log in to your {role === "doctor" ? "doctor" : "user"} account</p>
               </div>
 
               {error && (
