@@ -26,27 +26,35 @@ export const Hero: React.FC<{ onGetStarted?: () => void; onLoginUser?: () => voi
             Balance your health with holistic care and expert guidance.
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="group rounded-2xl border bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={onLoginUser}
+              className="group cursor-pointer rounded-2xl border bg-white p-5 shadow-sm ring-1 ring-transparent transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-emerald-600/30"
+            >
               <div className="flex items-center gap-3">
                 <div className="rounded-xl border bg-emerald-50 p-2"><UserIcon className="h-5 w-5 text-emerald-700" /></div>
-                <div className="text-sm font-medium">Continue as User</div>
+                <div className="text-sm font-semibold">Continue as User</div>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">Personalized plans, tracking, and mindful guidance.</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <Button className="h-10 rounded-full bg-emerald-600 text-white hover:bg-emerald-600/90" onClick={onLoginUser}>Login</Button>
-                <Button variant="outline" className="h-10 rounded-full border-emerald-600/40 hover:bg-emerald-50" onClick={onRegisterUser}>Register</Button>
-              </div>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }} className="group rounded-2xl border bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.05 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={onLoginDoctor}
+              className="group cursor-pointer rounded-2xl border bg-white p-5 shadow-sm ring-1 ring-transparent transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-slate-800/25"
+            >
               <div className="flex items-center gap-3">
                 <div className="rounded-xl border bg-slate-100 p-2"><Stethoscope className="h-5 w-5 text-slate-800" /></div>
-                <div className="text-sm font-medium">Continue as Doctor</div>
+                <div className="text-sm font-semibold">Continue as Doctor</div>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">Consult requests, chat, and diet plan sharing.</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <Button className="h-10 rounded-full bg-slate-800 text-white hover:bg-slate-800/90" onClick={onLoginDoctor}>Login</Button>
-                <Button variant="outline" className="h-10 rounded-full border-slate-800/40 hover:bg-slate-50" onClick={onRegisterDoctor}>Register</Button>
-              </div>
             </motion.div>
           </div>
 
