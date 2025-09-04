@@ -8,22 +8,29 @@ export const Footer: React.FC = () => {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.5 }}
-      className="bg-transparent py-8 text-white/90"
+      className="bg-transparent py-8 text-white/85"
     >
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 md:flex-row">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-6 px-6 md:grid-cols-3">
+        {/* Left: brand */}
+        <div className="flex items-center justify-center gap-3 md:justify-start">
           <div className="h-6 w-6 rounded-md bg-white/30" />
           <span className="text-sm font-semibold">AyurWell</span>
         </div>
-        <nav className="text-xs">
-          <ul className="flex items-center gap-4">
-            <li><a className="transition-colors hover:text-white" href="#">Privacy</a></li>
-            <li><a className="transition-colors hover:text-white" href="#">Terms</a></li>
-            <li><a className="transition-colors hover:text-white" href="#">Contact</a></li>
+
+        {/* Center: nav */}
+        <nav className="flex justify-center text-xs">
+          <ul className="flex items-center gap-5">
+            <li><a className="transition-colors hover:text-white hover:underline underline-offset-4" href="#">Home</a></li>
+            <li><a className="transition-colors hover:text-white hover:underline underline-offset-4" href="#">About</a></li>
+            <li><a className="transition-colors hover:text-white hover:underline underline-offset-4" href="#">Contact</a></li>
           </ul>
         </nav>
+
+        {/* Right: copyright */}
+        <div className="flex justify-center md:justify-end">
+          <div className="text-[11px] text-white/70">© {new Date().getFullYear()} AyurWell. All rights reserved.</div>
+        </div>
       </div>
-      <div className="mx-auto max-w-6xl px-6 pt-4 text-[11px] text-white/70">© {new Date().getFullYear()} AyurWell. All rights reserved.</div>
     </motion.footer>
   );
 };
