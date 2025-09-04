@@ -47,6 +47,16 @@ export const Hero: React.FC<{ onGetStarted?: () => void; onLoginUser?: () => voi
             <div className="flex items-center gap-2"><Dumbbell className="h-4 w-4 text-foreground/70" /> Smart workouts</div>
           </div>
         </div>
+        <div className="relative">
+          <motion.div initial={{ y: 16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
+            <img
+              src="https://images.pexels.com/photos/7319717/pexels-photo-7319717.jpeg"
+              alt="Woman in calm yoga pose, arms extended, in neutral setting."
+              className="aspect-[4/3] w-full rounded-3xl border object-cover shadow-sm"
+              loading="lazy"
+            />
+          </motion.div>
+        </div>
       </div>
     </div>
   );
