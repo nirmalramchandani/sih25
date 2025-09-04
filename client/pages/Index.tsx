@@ -5,11 +5,14 @@ import Footer from "@/components/app/Footer";
 import Testimonials from "@/components/app/Testimonials";
 
 export default function Index() {
+  const bgUrl = "https://images.pexels.com/photos/3621234/pexels-photo-3621234.jpeg";
   return (
-    <div className="min-h-screen bg-white">
+    <div
+      className="min-h-screen w-full bg-fixed bg-cover bg-center text-white"
+      style={{ backgroundImage: `url(${bgUrl})` }}
+    >
       <NavBar onGetStarted={() => window.location.assign("/login")} onSignIn={() => window.location.assign("/login")} />
 
-      {/* Full-screen hero with fixed background image */}
       <Hero
         onLoginUser={() => window.location.assign("/login?role=user")}
         onRegisterUser={() => window.location.assign("/login?role=user")}
@@ -17,7 +20,6 @@ export default function Index() {
         onRegisterDoctor={() => window.location.assign("/login?role=doctor")}
       />
 
-      {/* Content sections without additional images */}
       <Testimonials />
       <Footer />
     </div>
