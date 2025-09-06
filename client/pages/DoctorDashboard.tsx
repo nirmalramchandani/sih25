@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export default function DoctorDashboard() {
@@ -25,6 +26,65 @@ export default function DoctorDashboard() {
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<"requests" | "patients">("requests");
   const [addPatientOpen, setAddPatientOpen] = useState(false);
+
+  const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] as const;
+  type MealInfo = { name: string; kcal: number; tags: string[]; icon: string };
+  type WeeklyPlan = { day: string; breakfast: MealInfo; lunch: MealInfo; dinner: MealInfo; snacks: MealInfo }[];
+  const [weeklyPlan, setWeeklyPlan] = useState<WeeklyPlan | null>(null);
+
+  const generateWeekly = () => {
+    const dosha = selectedReq?.patientDosha || "Kapha";
+    const base = {
+      bf: [
+        { name: "Warm Spiced Oats", kcal: 320, tags: ["Warm","Rasa: Madhura","Light"], icon: "🥣" },
+        { name: "Ragi Porridge", kcal: 300, tags: ["Grounding","Sattvic"], icon: "🥛" },
+      ],
+      ln: [
+        { name: "Moong Dal Khichdi", kcal: 450, tags: ["Light","Tridoshic"], icon: "🍲" },
+        { name: "Veg Millet Bowl", kcal: 480, tags: ["Warm","Madhura"], icon: "🥗" },
+      ],
+      dn: [
+        { name: "Steamed Veg + Ghee", kcal: 420, tags: ["Light","Warm"], icon: "🍲" },
+        { name: "Paneer & Spinach", kcal: 430, tags: ["Heavy","Madhura"], icon: "🥗" },
+      ],
+      sn: [
+        { name: "Herbal Tea + Nuts", kcal: 180, tags: ["Warm","Kashaya"], icon: "🍵" },
+        { name: "Fruit & Seeds", kcal: 160, tags: ["Cold","Amla"], icon: "🍎" },
+      ],
+    } as const;
+    const pick = <T,>(arr: readonly T[]) => arr[Math.floor(Math.random()*arr.length)];
+    const adjust = (m: MealInfo): MealInfo => {
+      if (dosha === "Pitta") return { ...m, tags: Array.from(new Set([...m.tags, "Cooling"])) };
+      if (dosha === "Vata") return { ...m, tags: Array.from(new Set([...m.tags, "Warm"])) };
+      return { ...m, tags: Array.from(new Set([...m.tags, "Light"])) };
+    };
+    const meal = (t: "bf"|"ln"|"dn"|"sn"): MealInfo => adjust(pick((base as any)[t]));
+    const week: WeeklyPlan = DAYS.map((d) => ({
+      day: d,
+      breakfast: meal("bf"),
+      lunch: meal("ln"),
+      dinner: meal("dn"),
+      snacks: meal("sn"),
+    }));
+    setWeeklyPlan(week);
+  };
+
+  const exportWeeklyCsv = () => {
+    if (!weeklyPlan) return;
+    const header = ["Day","Breakfast","Lunch","Dinner","Snacks"];
+    const rows = weeklyPlan.map((r)=>[
+      r.day,
+      `${r.breakfast.name} (${r.breakfast.kcal})`,
+      `${r.lunch.name} (${r.lunch.kcal})`,
+      `${r.dinner.name} (${r.dinner.kcal})`,
+      `${r.snacks.name} (${r.snacks.kcal})`,
+    ]);
+    const csv = [header, ...rows].map(r=>r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "diet-plan-weekly.csv"; a.click(); URL.revokeObjectURL(url);
+  };
 
   const getDoctorProfileId = () => {
     const key = `app:doctor-map:${currentUser?.id || "anon"}`;
@@ -321,9 +381,61 @@ export default function DoctorDashboard() {
           {!isApproved && (<div className="mt-2 text-xs text-muted-foreground">Approve the request to enable chat, video, and editing.</div>)}
         </CardContent>
       </Card>
+
+      <Card className="print:shadow-none print:border-0">
+        <CardHeader className="flex items-center justify-between">
+          <CardTitle>Weekly 7-Day Plan</CardTitle>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={exportWeeklyCsv}>Export CSV</Button>
+            <Button variant="outline" onClick={()=>window.print()}>Print</Button>
+            <Button onClick={generateWeekly}>Generate 7-Day Plan</Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {weeklyPlan ? (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Day</TableHead>
+                    <TableHead>Breakfast</TableHead>
+                    <TableHead>Lunch</TableHead>
+                    <TableHead>Dinner</TableHead>
+                    <TableHead>Snacks</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {weeklyPlan.map((r, idx)=> (
+                    <TableRow key={r.day} className={idx % 2 ? "bg-muted/30" : undefined}>
+                      <TableCell className="font-medium">{r.day}</TableCell>
+                      <WeeklyMealCell m={r.breakfast} />
+                      <WeeklyMealCell m={r.lunch} />
+                      <WeeklyMealCell m={r.dinner} />
+                      <WeeklyMealCell m={r.snacks} />
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <div className="text-sm text-muted-foreground">Generate a personalized 7-day plan based on the patient’s dosha.</div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
+
+const WeeklyMealCell: React.FC<{ m: { name: string; kcal: number; tags: string[]; icon: string } }> = ({ m }) => {
+  return (
+    <TableCell>
+      <div className="font-medium">{m.icon} {m.name} <span className="text-xs text-muted-foreground">{m.kcal} kcal</span></div>
+      <div className="mt-1 flex flex-wrap gap-1">
+        {m.tags.map((t,i)=>(<Badge key={i} variant="secondary">{t}</Badge>))}
+      </div>
+    </TableCell>
+  );
+};
 
 const AddPatientForm: React.FC<{
   onCancel: () => void;
