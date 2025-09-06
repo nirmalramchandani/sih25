@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 export default function DoctorDashboard() {
@@ -82,7 +83,7 @@ export default function DoctorDashboard() {
                   <DialogTrigger asChild>
                     <Button size="sm">Add Patient</Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-xl">
+                  <DialogContent className="sm:max-w-lg">
                     <DialogHeader>
                       <DialogTitle>Add New Patient</DialogTitle>
                     </DialogHeader>
@@ -362,89 +363,104 @@ const AddPatientForm: React.FC<{
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2">
+    <div className="relative max-h-[75vh] overflow-y-auto">
+      <div className="space-y-5 p-4">
         <div>
-          <Label>Name</Label>
-          <Input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Patient full name" />
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Basic Details</div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div>
+              <Label>Name</Label>
+              <Input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Patient full name" />
+            </div>
+            <div>
+              <Label>Dosha</Label>
+              <Select value={dosha ?? undefined} onValueChange={(v)=> setDosha(v as any)}>
+                <SelectTrigger><SelectValue placeholder="Select dosha" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Vata">Vata</SelectItem>
+                  <SelectItem value="Pitta">Pitta</SelectItem>
+                  <SelectItem value="Kapha">Kapha</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Age</Label>
+              <Input type="number" value={age ?? ""} onChange={(e)=> setAge(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="Years" />
+            </div>
+            <div>
+              <Label>Gender</Label>
+              <Select value={gender ?? undefined} onValueChange={(v)=> setGender(v as any)}>
+                <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Height (cm)</Label>
+              <Input type="number" value={heightCm ?? ""} onChange={(e)=> setHeightCm(e.target.value ? parseInt(e.target.value) : undefined)} />
+            </div>
+            <div>
+              <Label>Weight (kg)</Label>
+              <Input type="number" value={weightKg ?? ""} onChange={(e)=> setWeightKg(e.target.value ? parseInt(e.target.value) : undefined)} />
+            </div>
+          </div>
         </div>
+
+        <Separator />
+
         <div>
-          <Label>Dosha</Label>
-          <Select value={dosha ?? undefined} onValueChange={(v)=> setDosha(v as any)}>
-            <SelectTrigger><SelectValue placeholder="Select dosha" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Vata">Vata</SelectItem>
-              <SelectItem value="Pitta">Pitta</SelectItem>
-              <SelectItem value="Kapha">Kapha</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Medical History</div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div>
+              <Label>Allergies</Label>
+              <Textarea value={allergies} onChange={(e)=>setAllergies(e.target.value)} placeholder="e.g., peanuts, lactose" />
+            </div>
+            <div>
+              <Label>Conditions</Label>
+              <Textarea value={conditions} onChange={(e)=>setConditions(e.target.value)} placeholder="e.g., diabetes, hypertension" />
+            </div>
+            <div>
+              <Label>Medications</Label>
+              <Textarea value={medications} onChange={(e)=>setMedications(e.target.value)} placeholder="Current medications" />
+            </div>
+          </div>
         </div>
+
+        <Separator />
+
         <div>
-          <Label>Age</Label>
-          <Input type="number" value={age ?? ""} onChange={(e)=> setAge(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="Years" />
-        </div>
-        <div>
-          <Label>Gender</Label>
-          <Select value={gender ?? undefined} onValueChange={(v)=> setGender(v as any)}>
-            <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Male">Male</SelectItem>
-              <SelectItem value="Female">Female</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label>Height (cm)</Label>
-          <Input type="number" value={heightCm ?? ""} onChange={(e)=> setHeightCm(e.target.value ? parseInt(e.target.value) : undefined)} />
-        </div>
-        <div>
-          <Label>Weight (kg)</Label>
-          <Input type="number" value={weightKg ?? ""} onChange={(e)=> setWeightKg(e.target.value ? parseInt(e.target.value) : undefined)} />
+          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Lifestyle</div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div>
+              <Label>Lifestyle / Habits</Label>
+              <Textarea value={habits} onChange={(e)=>setHabits(e.target.value)} placeholder="Diet, exercise, smoking, alcohol" />
+            </div>
+            <div>
+              <Label>Sleep Pattern</Label>
+              <Input value={sleepPattern} onChange={(e)=>setSleepPattern(e.target.value)} placeholder="e.g., 7h, disturbed" />
+            </div>
+            <div>
+              <Label>Digestion</Label>
+              <Select value={digestion} onValueChange={(v)=> setDigestion(v)}>
+                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Poor">Poor</SelectItem>
+                  <SelectItem value="Normal">Normal</SelectItem>
+                  <SelectItem value="Strong">Strong</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="sm:col-span-2">
+              <Label>Notes</Label>
+              <Textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Additional observations" />
+            </div>
+          </div>
         </div>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div>
-          <Label>Allergies</Label>
-          <Textarea value={allergies} onChange={(e)=>setAllergies(e.target.value)} placeholder="e.g., peanuts, lactose" />
-        </div>
-        <div>
-          <Label>Conditions</Label>
-          <Textarea value={conditions} onChange={(e)=>setConditions(e.target.value)} placeholder="e.g., diabetes, hypertension" />
-        </div>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div>
-          <Label>Medications</Label>
-          <Textarea value={medications} onChange={(e)=>setMedications(e.target.value)} placeholder="Current medications" />
-        </div>
-        <div>
-          <Label>Lifestyle / Habits</Label>
-          <Textarea value={habits} onChange={(e)=>setHabits(e.target.value)} placeholder="Diet, exercise, smoking, alcohol" />
-        </div>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div>
-          <Label>Sleep Pattern</Label>
-          <Input value={sleepPattern} onChange={(e)=>setSleepPattern(e.target.value)} placeholder="e.g., 7h, disturbed" />
-        </div>
-        <div>
-          <Label>Digestion</Label>
-          <Select value={digestion} onValueChange={(v)=> setDigestion(v)}>
-            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Poor">Poor</SelectItem>
-              <SelectItem value="Normal">Normal</SelectItem>
-              <SelectItem value="Strong">Strong</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div>
-        <Label>Notes</Label>
-        <Textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Additional observations" />
-      </div>
-      <div className="flex justify-end gap-2">
+      <div className="border-t bg-background px-4 py-3 flex justify-end gap-2">
         <Button variant="outline" onClick={onCancel}>Cancel</Button>
         <Button onClick={submit} disabled={!name.trim()}>Create Patient</Button>
       </div>
