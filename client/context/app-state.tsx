@@ -37,6 +37,20 @@ export type Doctor = {
   rating: number;
 };
 
+export type PatientProfile = {
+  age?: number;
+  gender?: "Male" | "Female" | "Other";
+  heightCm?: number;
+  weightKg?: number;
+  allergies?: string;
+  conditions?: string;
+  medications?: string;
+  habits?: string;
+  sleepPattern?: string;
+  digestion?: "Poor" | "Normal" | "Strong" | string;
+  notes?: string;
+};
+
 export type ConsultRequest = {
   id: string;
   userId: string;
@@ -46,6 +60,7 @@ export type ConsultRequest = {
   patientName?: string;
   patientDosha?: User["dosha"];
   plan?: { time: string; name: string; calories: number; waterMl?: number }[];
+  patientProfile?: PatientProfile;
 };
 
 export type Notification = {
