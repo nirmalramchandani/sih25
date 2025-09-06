@@ -23,6 +23,7 @@ export default function DoctorDashboard() {
   const [plan, setPlan] = useState(defaultPlan);
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<"requests" | "patients">("requests");
+  const [addPatientOpen, setAddPatientOpen] = useState(false);
 
   const getDoctorProfileId = () => {
     const key = `app:doctor-map:${currentUser?.id || "anon"}`;
