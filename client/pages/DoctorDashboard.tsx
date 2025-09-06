@@ -323,3 +323,131 @@ export default function DoctorDashboard() {
     </div>
   );
 }
+
+const AddPatientForm: React.FC<{
+  onCancel: () => void;
+  onCreate: (p: {
+    name: string;
+    dosha: "Vata" | "Pitta" | "Kapha" | null;
+    age?: number;
+    gender?: "Male" | "Female" | "Other";
+    heightCm?: number;
+    weightKg?: number;
+    allergies?: string;
+    conditions?: string;
+    medications?: string;
+    habits?: string;
+    sleepPattern?: string;
+    digestion?: "Poor" | "Normal" | "Strong" | string;
+    notes?: string;
+  }) => void;
+}> = ({ onCancel, onCreate }) => {
+  const [name, setName] = useState("");
+  const [dosha, setDosha] = useState<"Vata" | "Pitta" | "Kapha" | null>(null);
+  const [age, setAge] = useState<number | undefined>(undefined);
+  const [gender, setGender] = useState<"Male" | "Female" | "Other" | undefined>(undefined);
+  const [heightCm, setHeightCm] = useState<number | undefined>(undefined);
+  const [weightKg, setWeightKg] = useState<number | undefined>(undefined);
+  const [allergies, setAllergies] = useState("");
+  const [conditions, setConditions] = useState("");
+  const [medications, setMedications] = useState("");
+  const [habits, setHabits] = useState("");
+  const [sleepPattern, setSleepPattern] = useState("");
+  const [digestion, setDigestion] = useState<"Poor" | "Normal" | "Strong" | string>("Normal");
+  const [notes, setNotes] = useState("");
+
+  const submit = () => {
+    if (!name.trim()) return;
+    onCreate({ name: name.trim(), dosha, age, gender, heightCm, weightKg, allergies: allergies.trim() || undefined, conditions: conditions.trim() || undefined, medications: medications.trim() || undefined, habits: habits.trim() || undefined, sleepPattern: sleepPattern.trim() || undefined, digestion, notes: notes.trim() || undefined });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <Label>Name</Label>
+          <Input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Patient full name" />
+        </div>
+        <div>
+          <Label>Dosha</Label>
+          <Select value={dosha ?? undefined} onValueChange={(v)=> setDosha(v as any)}>
+            <SelectTrigger><SelectValue placeholder="Select dosha" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Vata">Vata</SelectItem>
+              <SelectItem value="Pitta">Pitta</SelectItem>
+              <SelectItem value="Kapha">Kapha</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Age</Label>
+          <Input type="number" value={age ?? ""} onChange={(e)=> setAge(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="Years" />
+        </div>
+        <div>
+          <Label>Gender</Label>
+          <Select value={gender ?? undefined} onValueChange={(v)=> setGender(v as any)}>
+            <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Male">Male</SelectItem>
+              <SelectItem value="Female">Female</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label>Height (cm)</Label>
+          <Input type="number" value={heightCm ?? ""} onChange={(e)=> setHeightCm(e.target.value ? parseInt(e.target.value) : undefined)} />
+        </div>
+        <div>
+          <Label>Weight (kg)</Label>
+          <Input type="number" value={weightKg ?? ""} onChange={(e)=> setWeightKg(e.target.value ? parseInt(e.target.value) : undefined)} />
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <Label>Allergies</Label>
+          <Textarea value={allergies} onChange={(e)=>setAllergies(e.target.value)} placeholder="e.g., peanuts, lactose" />
+        </div>
+        <div>
+          <Label>Conditions</Label>
+          <Textarea value={conditions} onChange={(e)=>setConditions(e.target.value)} placeholder="e.g., diabetes, hypertension" />
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <Label>Medications</Label>
+          <Textarea value={medications} onChange={(e)=>setMedications(e.target.value)} placeholder="Current medications" />
+        </div>
+        <div>
+          <Label>Lifestyle / Habits</Label>
+          <Textarea value={habits} onChange={(e)=>setHabits(e.target.value)} placeholder="Diet, exercise, smoking, alcohol" />
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <Label>Sleep Pattern</Label>
+          <Input value={sleepPattern} onChange={(e)=>setSleepPattern(e.target.value)} placeholder="e.g., 7h, disturbed" />
+        </div>
+        <div>
+          <Label>Digestion</Label>
+          <Select value={digestion} onValueChange={(v)=> setDigestion(v)}>
+            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Poor">Poor</SelectItem>
+              <SelectItem value="Normal">Normal</SelectItem>
+              <SelectItem value="Strong">Strong</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div>
+        <Label>Notes</Label>
+        <Textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Additional observations" />
+      </div>
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" onClick={onCancel}>Cancel</Button>
+        <Button onClick={submit} disabled={!name.trim()}>Create Patient</Button>
+      </div>
+    </div>
+  );
+};
