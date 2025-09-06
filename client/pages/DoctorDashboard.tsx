@@ -111,7 +111,49 @@ export default function DoctorDashboard() {
                   </div>
                 ) : (
                   <div>
-                    <div className="mb-2 text-sm font-semibold">My Patients</div>
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="text-sm font-semibold">My Patients</div>
+                      <Dialog open={addPatientOpen} onOpenChange={setAddPatientOpen}>
+                        <DialogTrigger asChild>
+                          <Button size="sm">Add Patient</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-xl">
+                          <DialogHeader>
+                            <DialogTitle>Add New Patient</DialogTitle>
+                          </DialogHeader>
+                          <AddPatientForm onCancel={()=>setAddPatientOpen(false)} onCreate={(payload)=>{
+                            const newId = `req_${Date.now()}`;
+                            const newUserId = `u_${Date.now()}`;
+                            const newReq = {
+                              id: newId,
+                              userId: newUserId,
+                              doctorId: doctorProfileId,
+                              status: "accepted" as const,
+                              createdAt: new Date().toISOString(),
+                              patientName: payload.name,
+                              patientDosha: payload.dosha,
+                              plan: defaultPlan,
+                              patientProfile: {
+                                age: payload.age,
+                                gender: payload.gender,
+                                heightCm: payload.heightCm,
+                                weightKg: payload.weightKg,
+                                allergies: payload.allergies,
+                                conditions: payload.conditions,
+                                medications: payload.medications,
+                                habits: payload.habits,
+                                sleepPattern: payload.sleepPattern,
+                                digestion: payload.digestion,
+                                notes: payload.notes,
+                              },
+                            };
+                            setRequests([newReq, ...requests]);
+                            setAddPatientOpen(false);
+                            setSelected(newId);
+                          }} />
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                     <Table>
                       <TableHeader>
                         <TableRow>
