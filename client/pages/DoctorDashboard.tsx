@@ -73,9 +73,51 @@ export default function DoctorDashboard() {
           <CardContent>
             <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">Manage incoming requests and active patients</div>
             <div className="rounded-lg border">
-              <div className="flex flex-wrap gap-2 border-b p-2 text-sm">
-                <button onClick={()=>setTab("requests")} className={cn("rounded-md px-3 py-1.5", tab === "requests" ? "bg-muted font-medium" : "hover:bg-muted")}>Requests</button>
-                <button onClick={()=>setTab("patients")} className={cn("rounded-md px-3 py-1.5", tab === "patients" ? "bg-muted font-medium" : "hover:bg-muted")}>My Patients</button>
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b p-2 text-sm">
+                <div className="flex gap-2">
+                  <button onClick={()=>setTab("requests")} className={cn("rounded-md px-3 py-1.5", tab === "requests" ? "bg-muted font-medium" : "hover:bg-muted")}>Requests</button>
+                  <button onClick={()=>setTab("patients")} className={cn("rounded-md px-3 py-1.5", tab === "patients" ? "bg-muted font-medium" : "hover:bg-muted")}>My Patients</button>
+                </div>
+                <Dialog open={addPatientOpen} onOpenChange={setAddPatientOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm">Add Patient</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-xl">
+                    <DialogHeader>
+                      <DialogTitle>Add New Patient</DialogTitle>
+                    </DialogHeader>
+                    <AddPatientForm onCancel={()=>setAddPatientOpen(false)} onCreate={(payload)=>{
+                      const newId = `req_${Date.now()}`;
+                      const newUserId = `u_${Date.now()}`;
+                      const newReq = {
+                        id: newId,
+                        userId: newUserId,
+                        doctorId: doctorProfileId,
+                        status: "accepted" as const,
+                        createdAt: new Date().toISOString(),
+                        patientName: payload.name,
+                        patientDosha: payload.dosha,
+                        plan: defaultPlan,
+                        patientProfile: {
+                          age: payload.age,
+                          gender: payload.gender,
+                          heightCm: payload.heightCm,
+                          weightKg: payload.weightKg,
+                          allergies: payload.allergies,
+                          conditions: payload.conditions,
+                          medications: payload.medications,
+                          habits: payload.habits,
+                          sleepPattern: payload.sleepPattern,
+                          digestion: payload.digestion,
+                          notes: payload.notes,
+                        },
+                      };
+                      setRequests([newReq, ...requests]);
+                      setAddPatientOpen(false);
+                      setSelected(newId);
+                    }} />
+                  </DialogContent>
+                </Dialog>
               </div>
               <div className="p-3">
                 {tab === "requests" ? (
@@ -111,49 +153,7 @@ export default function DoctorDashboard() {
                   </div>
                 ) : (
                   <div>
-                    <div className="mb-2 flex items-center justify-between">
-                      <div className="text-sm font-semibold">My Patients</div>
-                      <Dialog open={addPatientOpen} onOpenChange={setAddPatientOpen}>
-                        <DialogTrigger asChild>
-                          <Button size="sm">Add Patient</Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-xl">
-                          <DialogHeader>
-                            <DialogTitle>Add New Patient</DialogTitle>
-                          </DialogHeader>
-                          <AddPatientForm onCancel={()=>setAddPatientOpen(false)} onCreate={(payload)=>{
-                            const newId = `req_${Date.now()}`;
-                            const newUserId = `u_${Date.now()}`;
-                            const newReq = {
-                              id: newId,
-                              userId: newUserId,
-                              doctorId: doctorProfileId,
-                              status: "accepted" as const,
-                              createdAt: new Date().toISOString(),
-                              patientName: payload.name,
-                              patientDosha: payload.dosha,
-                              plan: defaultPlan,
-                              patientProfile: {
-                                age: payload.age,
-                                gender: payload.gender,
-                                heightCm: payload.heightCm,
-                                weightKg: payload.weightKg,
-                                allergies: payload.allergies,
-                                conditions: payload.conditions,
-                                medications: payload.medications,
-                                habits: payload.habits,
-                                sleepPattern: payload.sleepPattern,
-                                digestion: payload.digestion,
-                                notes: payload.notes,
-                              },
-                            };
-                            setRequests([newReq, ...requests]);
-                            setAddPatientOpen(false);
-                            setSelected(newId);
-                          }} />
-                        </DialogContent>
-                      </Dialog>
-                    </div>
+                    <div className="mb-2 text-sm font-semibold">My Patients</div>
                     <Table>
                       <TableHeader>
                         <TableRow>
